@@ -26,6 +26,8 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "XinputManager.h"
+#include "Primitive.h"
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -33,12 +35,24 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
+
+	void update(float dt);
+
+	void checkUp();
+	void checkDown();
+	void checkLeft();
+	void checkRight();
     
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
+private:
+	Pm::SquarePrimitive s{ cocos2d::Vec2(100,100),cocos2d::Vec2(200,200) };
+	SednaInput::XinputController *p1;
+	SednaInput::XinputManager managerR;
+	SednaInput::Stick sticks[2];
 };
 
 #endif // __HELLOWORLD_SCENE_H__

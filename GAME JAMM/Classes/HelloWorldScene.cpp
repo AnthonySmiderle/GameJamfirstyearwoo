@@ -86,39 +86,59 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
+	this->addChild(s.getDrawNode(), 1);
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+	this->scheduleUpdate();
 
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
     return true;
 }
 
+void HelloWorld::update(float dt)
+{
+	managerR.update();
 
+	checkUp();
+	checkDown();
+	checkLeft();
+	checkRight();
+}
+
+void HelloWorld::checkUp()
+{
+	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_UP)) {
+		s.setPoint((s.getStart() + cocos2d::Vec2(0, 5)), (s.getEnd() + cocos2d::Vec2(0, 5)));
+		s.getDrawNode()->clear();
+		s.update();
+	}
+}
+
+void HelloWorld::checkDown()
+{
+	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)) {
+		s.setPoint((s.getStart() + cocos2d::Vec2(0, -5)), (s.getEnd() + cocos2d::Vec2(0, -5)));
+		s.getDrawNode()->clear();
+		s.update();
+	}
+}
+
+void HelloWorld::checkLeft()
+{
+	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)) {
+		s.setPoint((s.getStart() + cocos2d::Vec2(-5, 0)), (s.getEnd() + cocos2d::Vec2(-5, 0)));
+		s.getDrawNode()->clear();
+		s.update();
+	}
+}
+
+void HelloWorld::checkRight()
+{
+	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)) {
+		s.setPoint((s.getStart() + cocos2d::Vec2(5, 0)), (s.getEnd() + cocos2d::Vec2(5, 0)));
+		s.getDrawNode()->clear();
+		s.update();
+	}
+}
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
