@@ -1,10 +1,10 @@
 #include "HelloWorldScene.h"
+#include "GameScene.h"
 #include "MainMenuScene.h"
 #include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
-//////////// SCENE CREATOR //////////////////////////////////////////
 cocos2d::Scene* MainMenu::createScene() { return MainMenu::create(); }
 
 //////////// ENTER SCENE ////////////////////////////////////////////
@@ -29,18 +29,16 @@ bool MainMenu::init() {
 	return true;
 }
 
-//////////// INIT MENU ITEMS ////////////////////////////////////////
 void MainMenu::initMenu() {
 	Vec2 windowSize = director->getWinSizeInPixels();
-	Vec2 origin = director->getVisibleOrigin();
 
 	background = Sprite::create("backgrounds/MainMenuBG.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-	title = Label::create("3AM Cooking Sim!", "fonts/Roboto/Roboto-Regular.ttf", 24);
+	title = Label::create("3AM Cooking Sim!", "fonts/Roboto/Roboto-Regular.ttf", 72);
 	title->setAnchorPoint(Vec2(0.5f, 0.5f));
-	title->setPosition(Vec2(origin.x + windowSize.x / 2.0f, origin.y + windowSize.y - title->getContentSize().height));
+	title->setPosition(Vec2(windowSize.x / 2.0f, windowSize.y - title->getContentSize().height - 200));
 	title->enableShadow();
 
 	auto playLabel = Label::create("Start Game", "fonts/Roboto/Roboto-Regular.ttf", 24);
@@ -49,8 +47,9 @@ void MainMenu::initMenu() {
 	playLabel->enableShadow();
 
 	auto playButton = MenuItemLabel::create(playLabel, [&](Ref* sender) {
-		auto helloWorldScene = HelloWorld::createScene();
-		director->replaceScene(TransitionFade::create(2.0f, helloWorldScene));
+		//auto helloWorldScene = HelloWorld::createScene();
+		auto gameScene = Gameplay::createScene();
+		director->replaceScene(TransitionFade::create(2.0f, gameScene));
 	});
 	auto exitButton = MenuItemLabel::create(exitLabel, [&](Ref* sender) {
 		director->end();

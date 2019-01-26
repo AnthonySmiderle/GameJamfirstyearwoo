@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\AppDelegate">
+      <UniqueIdentifier>{357b682d-b743-42ae-88be-7d4bfa1145e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scenes">
+      <UniqueIdentifier>{1dace0bc-7c3c-4886-b00b-83373358c82b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Framework">
+      <UniqueIdentifier>{2af0b514-f92b-475c-b7a4-ee3c4d08cf38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scenes\Header Files">
+      <UniqueIdentifier>{5aef4184-a343-428a-9ece-96f3f34bd263}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scenes\Source Files">
+      <UniqueIdentifier>{31d10fee-127e-4418-b3fc-a7cd0835f1e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Framework\Header Files">
+      <UniqueIdentifier>{e4bff36d-907a-4109-a7e6-b0dc23b24bdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Framework\Source Files">
+      <UniqueIdentifier>{d2c549e8-e5c6-4693-9a8c-42b807c06091}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src\AppDelegate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\MainMenuScene.cpp">
+      <Filter>src\Scenes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene.cpp">
+      <Filter>src\Scenes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\XinputManager.cpp">
+      <Filter>src\Framework\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Primitives.cpp">
+      <Filter>src\Framework\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src\AppDelegate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\MainMenuScene.h">
+      <Filter>src\Scenes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene.h">
+      <Filter>src\Scenes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\XinputManager.h">
+      <Filter>src\Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Primitives.h">
+      <Filter>src\Framework\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
