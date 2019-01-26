@@ -64,10 +64,21 @@ namespace Pm {
 		~CirclePrimitive();
 
 
+		void update();
+
 		cocos2d::DrawNode* getDrawNode() const;
+		cocos2d::Vec2 getLocation() const;
+		float getRadius() const;
+
+		void setLocation(cocos2d::Vec2& LOCATION);
 
 	private:
+		float radius;
+		float angle;
+		unsigned int segments;
+		cocos2d::Vec2 location;
 		cocos2d::DrawNode* Node;
 	};
 
+	bool colliding(CirclePrimitive& c1, CirclePrimitive& c2);
 }
