@@ -79,6 +79,8 @@ bool HelloWorld::init()
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
+	this->addChild(itemHitCircle.getDrawNode(), 1);
+	items.push_back(itemHitCircle);
 
     /////////////////////////////
     // 3. add your codes below...
@@ -87,7 +89,7 @@ bool HelloWorld::init()
     // create and initialize a label
 
 
-	this->addChild(s.getDrawNode(), 1);
+	this->addChild(playerHitCircle.getDrawNode(), 1);
 
 	this->scheduleUpdate();
 
@@ -98,6 +100,17 @@ void HelloWorld::update(float dt)
 {
 	managerR.update();
 
+	for (int i = 0; i < items.size(); i++) {
+		if (Pm::colliding(playerHitCircle, items[i])) {
+			removeChild(items[i].getDrawNode(), 1);
+			items[i].getDrawNode()->clear();
+			items.erase(items.begin() + i);
+			i--;
+		}
+
+
+	}
+
 	checkUp();
 	checkDown();
 	checkLeft();
@@ -107,36 +120,36 @@ void HelloWorld::update(float dt)
 void HelloWorld::checkUp()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_UP)) {
-		s.setPoint((s.getStart() + cocos2d::Vec2(0, 5)), (s.getEnd() + cocos2d::Vec2(0, 5)));
-		s.getDrawNode()->clear();
-		s.update();
+		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(0, 5));
+		playerHitCircle.getDrawNode()->clear();
+		playerHitCircle.update();
 	}
 }
 
 void HelloWorld::checkDown()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)) {
-		s.setPoint((s.getStart() + cocos2d::Vec2(0, -5)), (s.getEnd() + cocos2d::Vec2(0, -5)));
-		s.getDrawNode()->clear();
-		s.update();
+		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(0, -5));
+		playerHitCircle.getDrawNode()->clear();
+		playerHitCircle.update();
 	}
 }
 
 void HelloWorld::checkLeft()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)) {
-		s.setPoint((s.getStart() + cocos2d::Vec2(-5, 0)), (s.getEnd() + cocos2d::Vec2(-5, 0)));
-		s.getDrawNode()->clear();
-		s.update();
+		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(-5, 0));
+		playerHitCircle.getDrawNode()->clear();
+		playerHitCircle.update();
 	}
 }
 
 void HelloWorld::checkRight()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)) {
-		s.setPoint((s.getStart() + cocos2d::Vec2(5, 0)), (s.getEnd() + cocos2d::Vec2(5, 0)));
-		s.getDrawNode()->clear();
-		s.update();
+		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(5, 0));
+		playerHitCircle.getDrawNode()->clear();
+		playerHitCircle.update();
 	}
 }
 void HelloWorld::menuCloseCallback(Ref* pSender)
