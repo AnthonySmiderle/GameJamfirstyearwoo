@@ -4,6 +4,8 @@
 #define __MAINMENU_SCENE_H__
 
 #include "cocos2d.h"
+#include "XinputManager.h"
+
 
 class MainMenu : public cocos2d::Scene {
 public:
@@ -18,8 +20,11 @@ public:
 	void initMenu();
 	void initMouseListener();
 	void initKeyboardListener();
+	void initXinputListener();
 
 private:
+	SednaInput::XinputManager menuCManager;
+
 	cocos2d::Director* director;
 	
 	cocos2d::EventListenerMouse* mouseListener;

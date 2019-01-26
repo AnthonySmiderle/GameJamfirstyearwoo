@@ -117,3 +117,8 @@ void MainMenu::initKeyboardListener() {
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 }
+
+void MainMenu::initXinputListener()
+{
+	menuCManager.update();
+}

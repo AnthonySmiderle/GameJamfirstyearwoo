@@ -22,26 +22,25 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "HelloWorldScene.h"
-#include "SimpleAudioEngine.h"
 #include "KitchenTwoScene.h"
+#include "SimpleAudioEngine.h"
 
 USING_NS_CC;
 
-Scene* HelloWorld::createScene()
+Scene* KitchenTwo::createScene()
 {
-    return HelloWorld::create();
+    return KitchenTwo::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
 static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
-    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+    printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in KitchenTwoScene.cpp\n");
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool KitchenTwo::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -49,8 +48,6 @@ bool HelloWorld::init()
     {
         return false;
     }
-	director = Director::getInstance();
-
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
@@ -62,7 +59,7 @@ bool HelloWorld::init()
     auto closeItem = MenuItemImage::create(
                                            "CloseNormal.png",
                                            "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+                                           CC_CALLBACK_1(KitchenTwo::menuCloseCallback, this));
 
     if (closeItem == nullptr ||
         closeItem->getContentSize().width <= 0 ||
@@ -92,18 +89,16 @@ bool HelloWorld::init()
 
 
 	this->addChild(playerHitCircle.getDrawNode(), 1);
-	this->addChild(momHitBox.getDrawNode());
-	
+
 	this->scheduleUpdate();
-	x = 0;
+
     return true;
 }
 
-void HelloWorld::update(float dt)
+void KitchenTwo::update(float dt)
 {
 	managerR.update();
 
-	x++;
 	for (int i = 0; i < items.size(); i++) {
 		if (Pm::colliding(playerHitCircle, items[i])) {
 			removeChild(items[i].getDrawNode(), 1);
@@ -112,32 +107,9 @@ void HelloWorld::update(float dt)
 			i--;
 		}
 	}
-	if (playerHitCircle.getLocation().x == 0)
-	{
-		auto kitchenTwo = KitchenTwo::createScene();
-		director->replaceScene(TransitionFade::create(2.0f, kitchenTwo));
-	}
-	if (managerR.getController(0)->isButtonPressed(SednaInput::X)) {
-
-		playerHitCircle.setIsHiding(true);
-
-	}
-	else {
-		playerHitCircle.setIsHiding(false);
-
-	}
-	if (x == 500) {
-		momHitBox.setIsInRoom(true);
-	}
-	if (x >= 600) {
-		momHitBox.setIsInRoom(false);
-		x = 0;
-	}
-
-	if (momHitBox.getIsInRoom() && !playerHitCircle.getIsHiding()) {
-		playerHitCircle.setLocation(cocos2d::Vec2(200, 200));
-	}
-
+	
+		//	playerHitCircle.setLocation(cocos2d::Vec2(1300, playerHitCircle.getLocation().y));
+	//
 
 	//checkUp();
 	//checkDown();
@@ -145,7 +117,7 @@ void HelloWorld::update(float dt)
 	checkRight();
 }
 
-void HelloWorld::checkUp()
+void KitchenTwo::checkUp()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_UP)) {
 		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(0, 10));
@@ -154,7 +126,7 @@ void HelloWorld::checkUp()
 	}
 }
 
-void HelloWorld::checkDown()
+void KitchenTwo::checkDown()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)) {
 		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(0, -10));
@@ -163,7 +135,7 @@ void HelloWorld::checkDown()
 	}
 }
 
-void HelloWorld::checkLeft()
+void KitchenTwo::checkLeft()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)) {
 		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(-10, 0));
@@ -172,7 +144,7 @@ void HelloWorld::checkLeft()
 	}
 }
 
-void HelloWorld::checkRight()
+void KitchenTwo::checkRight()
 {
 	if (managerR.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)) {
 		playerHitCircle.setLocation(playerHitCircle.getLocation() + cocos2d::Vec2(10, 0));
@@ -180,7 +152,7 @@ void HelloWorld::checkRight()
 		playerHitCircle.update();
 	}
 }
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void KitchenTwo::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
     Director::getInstance()->end();

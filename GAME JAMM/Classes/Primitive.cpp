@@ -51,6 +51,16 @@ namespace Pm {
 		Node->drawRect(start, end, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 
+	bool SquarePrimitive::getIsInRoom() const
+	{
+		return isInRoom;
+	}
+
+	void SquarePrimitive::setIsInRoom(bool y)
+	{
+		isInRoom = y;
+	}
+
 	//Circle
 	Pm::CirclePrimitive::CirclePrimitive(const cocos2d::Vec2 &LOCATION, float RADIUS, float ANGLE, unsigned int SEGMENTS)
 		: Node(cocos2d::DrawNode::create())
@@ -97,6 +107,16 @@ namespace Pm {
 	void CirclePrimitive::setLocation(cocos2d::Vec2 & LOCATION)
 	{
 		location = LOCATION;
+	}
+
+	bool CirclePrimitive::getIsHiding() const
+	{
+		return isHiding;
+	}
+
+	void CirclePrimitive::setIsHiding(bool y)
+	{
+		isHiding = y;
 	}
 
 	//Line

@@ -22,14 +22,15 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
+#ifndef __KITCHENTWO_SCENE_H__
+#define __KITCHENTWO_SCENE_H__
 
 #include "cocos2d.h"
 #include "XinputManager.h"
 #include "Primitive.h"
+#include "Item.h"
 
-class HelloWorld : public cocos2d::Scene
+class KitchenTwo : public cocos2d::Scene
 {
 public:
     static cocos2d::Scene* createScene();
@@ -47,11 +48,8 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(KitchenTwo);
 private:
-	int x;
-	Pm::SquarePrimitive momHitBox{ cocos2d::Vec2(1000,100),cocos2d::Vec2(1100,400) };
-	cocos2d::Director* director;
 	std::vector<Pm::CirclePrimitive> items;
 	Pm::CirclePrimitive itemHitCircle{ cocos2d::Vec2(50,200),5,5,40 };
 	Pm::CirclePrimitive playerHitCircle{ cocos2d::Vec2(200,200),10,5,40 };

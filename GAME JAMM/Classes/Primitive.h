@@ -12,7 +12,13 @@
 
 
 namespace Pm {
+	enum HIDING {
+		
+		inSight,
+		Hiding
 
+
+	};
 	class Capsule {
 
 	public:
@@ -41,6 +47,8 @@ namespace Pm {
 	class SquarePrimitive {
 
 	public:
+
+		
 		//using reference operator to denote a pointer, otherwise it won't work. Vec2 &name literally means an integer in the computer's memory
 		SquarePrimitive( const cocos2d::Vec2 &startingPosition,const cocos2d::Vec2& endPosition);
 		SquarePrimitive();
@@ -52,7 +60,13 @@ namespace Pm {
 		cocos2d::Vec2 getStart() const;
 		cocos2d::Vec2 getEnd() const;
 		void update();
+
+		bool getIsInRoom() const;
+		void setIsInRoom(bool y);
+
+
 	private:
+		bool isInRoom;
 		cocos2d::DrawNode *Node;
 		cocos2d::Vec2 start;
 		cocos2d::Vec2 end;
@@ -72,7 +86,11 @@ namespace Pm {
 
 		void setLocation(cocos2d::Vec2& LOCATION);
 
+		bool getIsHiding() const;
+		void setIsHiding(bool y);
+
 	private:
+		bool isHiding = false;
 		float radius;
 		float angle;
 		unsigned int segments;

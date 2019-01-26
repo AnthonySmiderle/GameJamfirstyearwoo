@@ -2,6 +2,8 @@
 #define  _APP_DELEGATE_H_
 
 #include "cocos2d.h"
+#include "XinputManager.h"
+#include <Windows.h>
 
 /**
 @brief    The cocos2d Application.
