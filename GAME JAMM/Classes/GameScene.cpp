@@ -15,7 +15,10 @@ bool Gameplay::init() {
 	if(!Scene::init()) return false;
 
 	director = Director::getInstance();
-	
+
+	windowSize = director->getWinSizeInPixels();
+	origin = director->getVisibleOrigin();
+
 	initSprites();
 	initPauseMenu();
 	initHUD();
@@ -31,7 +34,6 @@ bool Gameplay::init() {
 void Gameplay::onExit() { Scene::onExit(); }
 
 void Gameplay::initSprites() {
-	Vec2 windowSize = director->getWinSizeInPixels();
 
 	itemHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	playerHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
@@ -108,13 +110,11 @@ void Gameplay::quitToMainMenu() {
 }
 
 void Gameplay::initHUD() {
-	Vec2 windowSize = director->getWinSizeInPixels();
-
 	MenuItemImage* inventoryItem = MenuItemImage::create("square.png", "square.png");
 	inventoryItem->setPosition(windowSize.x / 2.0f - inventoryItem->getContentSize().width, -windowSize.y / 2.0f +inventoryItem->getContentSize().height);
 
 	HUD = Menu::create(inventoryItem, NULL);
-	this->addChild(HUD, 100);
+	this->addChild(HUD, 99);
 	HUD->setVisible(true);
 }
 
@@ -124,17 +124,33 @@ void Gameplay::update(float dt) {
 
 	for (int i = 0; i < items.size(); i++) {
 		if (g3nts::isColliding(playerHitCircle, items[i])) {
-			removeChild(items[i].getNode(), 1);
-			items[i].getNode()->clear();
-			items.erase(items.begin() + i);
-			i--;
+
+			if (inventory.size() == 0) {
+				items[i].getNode()->setVisible(false);
+
+				inventory.push_back(items[i]);
+				items.erase(items.begin() + i);
+				i--;
+
+			}
 		}
+	}
+
+	for (g3nts::PrimitiveCircle item : inventory) {
+		item.getNode()->setAnchorPoint(Vec2(0.5f, 0.5f));
+		item.setPosition(Vec2(origin.x + windowSize.x - 125,
+							  origin.y + 125));
+		item.getNode()->setVisible(true);
+		item.redraw();
 	}
 
 	checkUp();
 	checkDown();
 	checkLeft();
 	checkRight();
+
+
+
 	//checkStart();
 
 
