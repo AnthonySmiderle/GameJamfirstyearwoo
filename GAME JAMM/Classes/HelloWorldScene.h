@@ -28,6 +28,7 @@
 #include "cocos2d.h"
 #include "XinputManager.h"
 #include "Primitive.h"
+#include "Item.h"
 
 class HelloWorld : public cocos2d::Scene
 {
@@ -49,7 +50,9 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 private:
-	Pm::SquarePrimitive s{ cocos2d::Vec2(100,100),cocos2d::Vec2(200,200) };
+	std::vector<Pm::CirclePrimitive> items;
+	Pm::CirclePrimitive itemHitCircle{ cocos2d::Vec2(50,200),5,5,40 };
+	Pm::CirclePrimitive playerHitCircle{ cocos2d::Vec2(200,200),10,5,40 };
 	SednaInput::XinputController *p1;
 	SednaInput::XinputManager managerR;
 	SednaInput::Stick sticks[2];

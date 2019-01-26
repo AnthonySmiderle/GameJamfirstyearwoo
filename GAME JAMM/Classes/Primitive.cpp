@@ -2,6 +2,7 @@
 //100695532
 #include "Primitive.h"
 #include "2d/CCDrawNode.h"
+#include <cmath>
 
 namespace Pm {
 
@@ -56,6 +57,12 @@ namespace Pm {
 	{
 		//draw a circle given dimensions
 		Node->drawCircle(LOCATION, RADIUS, ANGLE, SEGMENTS, false, cocos2d::Color4F(0.0f, 1.0f, 0.0f, 1.0f));
+
+		location = LOCATION;
+		radius = RADIUS;
+		angle = ANGLE;
+		segments = SEGMENTS;
+
 	}
 
 	Pm::CirclePrimitive::CirclePrimitive()
@@ -67,9 +74,29 @@ namespace Pm {
 		Node->release();
 	}
 
+	void CirclePrimitive::update()
+	{
+		Node->drawCircle(location, radius, angle, segments, false, cocos2d::Color4F(0.0f, 1.0f, 0.0f, 1.0f));
+	}
+
 	cocos2d::DrawNode * Pm::CirclePrimitive::getDrawNode() const
 	{
 		return Node;
+	}
+
+	cocos2d::Vec2 CirclePrimitive::getLocation() const
+	{
+		return location;
+	}
+
+	float CirclePrimitive::getRadius() const
+	{
+		return radius;
+	}
+
+	void CirclePrimitive::setLocation(cocos2d::Vec2 & LOCATION)
+	{
+		location = LOCATION;
 	}
 
 	//Line
@@ -125,6 +152,25 @@ namespace Pm {
 	cocos2d::DrawNode * Pm::Capsule::getDrawNode() const
 	{
 		return Node;
+	}
+
+	
+
+	bool Pm::colliding(CirclePrimitive& c1, CirclePrimitive& c2)
+	{
+
+		cocos2d::Vec2 distance;
+		distance.x = (c1.getLocation().x) - (c2.getLocation().x);
+		distance.y = (c1.getLocation().y) - (c2.getLocation().y);
+
+		float squaredDistance = (distance.x * distance.x) + (distance.y * distance.y);
+
+		float squaredRadii = (c1.getRadius() * c1.getRadius()) + (c2.getRadius() * c2.getRadius());
+
+		if (squaredDistance <= squaredRadii)
+			return true;
+
+		return false;
 	}
 
 }
