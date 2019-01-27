@@ -5,6 +5,7 @@
 class HidingPlace {
 
 public:
+	HidingPlace();
 	HidingPlace(cocos2d::Vec2 start, cocos2d::Vec2 end);
 
 	

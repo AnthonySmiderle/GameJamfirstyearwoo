@@ -109,6 +109,7 @@ namespace g3nts {
 	};
 
 	bool isColliding(PrimitiveCircle& c1, PrimitiveCircle& c2);
+	bool isColliding(PrimitiveRect& r1, PrimitiveCircle& c2);
 	
 
 }

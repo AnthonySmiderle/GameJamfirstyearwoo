@@ -1,5 +1,9 @@
 #include "HidingPlace.h"
 
+HidingPlace::HidingPlace()
+{
+}
+
 HidingPlace::HidingPlace(cocos2d::Vec2 start, cocos2d::Vec2 end) : placeToHide(start,end)
 {
 }
