@@ -13,7 +13,7 @@ Scene* Gameplay::createScene() {
 void Gameplay::onEnter() { Scene::onEnter(); }
 
 bool Gameplay::init() {
-	if(!Scene::init()) return false;
+	if (!Scene::init()) return false;
 
 	srand(time(0));
 	director = Director::getInstance();
@@ -38,11 +38,16 @@ void Gameplay::onExit() { Scene::onExit(); }
 
 void Gameplay::initSprites() {
 	Vec2 windowSize = director->getWinSizeInPixels();
-
-
-	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	playerHitCircle = g3nts::PrimitiveCircle(Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+
+	hide = Label::create("Hold Space to Hide", "fonts/Roboto/Roboto-Regular.ttf", 30, Size::ZERO);
+	hide->setVisible(false);
+	hide->enableShadow();
+	this->addChild(hide);
+	hide->setPosition(cocos2d::Vec2(windowSize.x / 2.0f,windowSize.y / 2.0f));
+
 
 	scare = Sprite::create("mom.png");
 	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
@@ -86,7 +91,7 @@ void Gameplay::initPauseMenu() {
 	pausedItem->setPosition(0, 100);
 	resumeButton->setPosition(0, -200);
 	mainMenuButton->setPosition(0, -250);
-	
+
 	pauseMenu = Menu::create(pausedItem, resumeButton, mainMenuButton, NULL);
 
 	this->addChild(pauseMenu, 100);
@@ -127,7 +132,7 @@ void Gameplay::quitToMainMenu() {
 
 void Gameplay::initHUD() {
 	MenuItemImage* inventoryItem = MenuItemImage::create("square.png", "square.png");
-	inventoryItem->setPosition(windowSize.x / 2.0f - inventoryItem->getContentSize().width, -windowSize.y / 2.0f +inventoryItem->getContentSize().height);
+	inventoryItem->setPosition(windowSize.x / 2.0f - inventoryItem->getContentSize().width, -windowSize.y / 2.0f + inventoryItem->getContentSize().height);
 
 	HUD = Menu::create(inventoryItem, NULL);
 	this->addChild(HUD, 99);
@@ -160,7 +165,7 @@ void Gameplay::update(float dt) {
 		item.getNode()->setAnchorPoint(Vec2(0.5f, 0.5f));
 		item.getNode()->setLocalZOrder(150);
 		item.setPosition(Vec2(origin.x + windowSize.x - 125,
-							  origin.y + 125));
+			origin.y + 125));
 		item.getNode()->setVisible(true);
 		item.redraw();
 	}
@@ -173,6 +178,14 @@ void Gameplay::update(float dt) {
 
 
 	//checkStart();
+
+//	if(playerHitCircle.getPosition().x > 110 && playerHitCircle.getPosition().x < 200)
+	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && !keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
+		
+		hide->setVisible(true);
+	}
+	else
+		hide->setVisible(false);
 
 	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
 
@@ -270,18 +283,18 @@ void Gameplay::keyDownCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 
 void Gameplay::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 	keyboard.keyDown[(int)keyCode] = false;
-	
+
 	typedef EventKeyboard::KeyCode key;
 	switch (keyCode) {
 	case key::KEY_ESCAPE:
 		togglePause();
 		break;
-	
+
 	case key::KEY_SPACE:
 		if (inventory.size() > 0) {
 			inventory[0].getNode()->setLocalZOrder(0);
 			inventory[0].setPosition(Vec2(origin.x + playerHitCircle.getPosition().x + playerHitCircle.getRadius() + 5,
-										  origin.y + playerHitCircle.getPosition().y - playerHitCircle.getRadius() - 10));
+				origin.y + playerHitCircle.getPosition().y - playerHitCircle.getRadius() - 10));
 			inventory[0].redraw();
 
 			items.push_back(inventory[0]);
