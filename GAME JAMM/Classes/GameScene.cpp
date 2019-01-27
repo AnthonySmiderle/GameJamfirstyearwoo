@@ -3,16 +3,16 @@
 #include <iostream>
 #include "AudioEngine.h"
 
-Scene* Level1::sceneHandle = nullptr;
+Scene* Gameplay::sceneHandle = nullptr;
 
-Scene* Level1::createScene() {
-	sceneHandle = Level1::create();
+Scene* Gameplay::createScene() {
+	sceneHandle = Gameplay::create();
 	return sceneHandle;
 }
 
-void Level1::onEnter() { Scene::onEnter(); }
+void Gameplay::onEnter() { Scene::onEnter(); }
 
-bool Level1::init() {
+bool Gameplay::init() {
 	if(!Scene::init()) return false;
 
 	srand(time(0));
@@ -34,9 +34,9 @@ bool Level1::init() {
 	return true;
 }
 
-void Level1::onExit() { Scene::onExit(); }
+void Gameplay::onExit() { Scene::onExit(); }
 
-void Level1::initSprites() {
+void Gameplay::initSprites() {
 	Vec2 windowSize = director->getWinSizeInPixels();
 
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
@@ -75,7 +75,7 @@ void Level1::initSprites() {
 	momBox.getNode()->setVisible(false);
 }
 
-void Level1::initPauseMenu() {
+void Gameplay::initPauseMenu() {
 	Label* pausedLabel = Label::create("PAUSED", "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
 	pausedLabel->enableShadow();
 
@@ -99,7 +99,7 @@ void Level1::initPauseMenu() {
 	pauseMenu->setVisible(false);
 }
 
-void Level1::togglePause() {
+void Gameplay::togglePause() {
 	paused = !paused;
 
 	if (paused) {
@@ -127,12 +127,12 @@ void Level1::togglePause() {
 	}
 }
 
-void Level1::quitToMainMenu() {
+void Gameplay::quitToMainMenu() {
 	Scene* menuScene = MainMenu::createScene();
 	director->replaceScene(TransitionFade::create(2.0f, menuScene));
 }
 
-void Level1::initHUD() {
+void Gameplay::initHUD() {
 	MenuItemImage* inventoryItem = MenuItemImage::create("square.png", "square.png");
 	inventoryItem->setPosition(windowSize.x / 2.0f - inventoryItem->getContentSize().width, -windowSize.y / 2.0f +inventoryItem->getContentSize().height);
 
@@ -141,7 +141,7 @@ void Level1::initHUD() {
 	HUD->setVisible(true);
 }
 
-void Level1::update(float dt) {
+void Gameplay::update(float dt) {
 
 	//manager.update();
 	
@@ -274,18 +274,18 @@ void Level1::update(float dt) {
 	}
 }
 
-void Level1::initMouseListener() {
+void Gameplay::initMouseListener() {
 	mouseListener = EventListenerMouse::create();
 
-	mouseListener->onMouseDown = CC_CALLBACK_1(Level1::mouseDownCallBack, this);
-	mouseListener->onMouseUp = CC_CALLBACK_1(Level1::mouseUpCallBack, this);
-	mouseListener->onMouseMove = CC_CALLBACK_1(Level1::mouseMoveCallBack, this);
-	mouseListener->onMouseScroll = CC_CALLBACK_1(Level1::mouseScrollCallBack, this);
+	mouseListener->onMouseDown = CC_CALLBACK_1(Gameplay::mouseDownCallBack, this);
+	mouseListener->onMouseUp = CC_CALLBACK_1(Gameplay::mouseUpCallBack, this);
+	mouseListener->onMouseMove = CC_CALLBACK_1(Gameplay::mouseMoveCallBack, this);
+	mouseListener->onMouseScroll = CC_CALLBACK_1(Gameplay::mouseScrollCallBack, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
 }
 
-void Level1::mouseDownCallBack(cocos2d::Event* mEvent) {
+void Gameplay::mouseDownCallBack(cocos2d::Event* mEvent) {
 	EventMouse* mouseEvent = dynamic_cast<EventMouse*>(mEvent);
 
 	auto mouseClickPosition = mouseEvent->getLocationInView();
@@ -295,7 +295,7 @@ void Level1::mouseDownCallBack(cocos2d::Event* mEvent) {
 	mouseDown = true;
 }
 
-void Level1::mouseUpCallBack(cocos2d::Event * mEvent) {
+void Gameplay::mouseUpCallBack(cocos2d::Event * mEvent) {
 	EventMouse* mouseEvent = dynamic_cast<EventMouse*>(mEvent);
 
 	auto mouseUpPosition = mouseEvent->getLocationInView();
@@ -305,7 +305,7 @@ void Level1::mouseUpCallBack(cocos2d::Event * mEvent) {
 	mouseDown = false;
 }
 
-void Level1::mouseMoveCallBack(cocos2d::Event * mEvent) {
+void Gameplay::mouseMoveCallBack(cocos2d::Event * mEvent) {
 	EventMouse* mouseEvent = dynamic_cast<EventMouse*>(mEvent);
 
 	auto mouseEventPos = mouseEvent->getLocationInView();
@@ -314,22 +314,22 @@ void Level1::mouseMoveCallBack(cocos2d::Event * mEvent) {
 	mousePosition = mouse.position;
 }
 
-void Level1::mouseScrollCallBack(cocos2d::Event * mEvent) {}
+void Gameplay::mouseScrollCallBack(cocos2d::Event * mEvent) {}
 
-void Level1::initKeyboardListener() {
+void Gameplay::initKeyboardListener() {
 	keyboardListener = EventListenerKeyboard::create();
 
-	keyboardListener->onKeyPressed = CC_CALLBACK_2(Level1::keyDownCallback, this);
-	keyboardListener->onKeyReleased = CC_CALLBACK_2(Level1::keyUpCallback, this);
+	keyboardListener->onKeyPressed = CC_CALLBACK_2(Gameplay::keyDownCallback, this);
+	keyboardListener->onKeyReleased = CC_CALLBACK_2(Gameplay::keyUpCallback, this);
 
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 }
 
-void Level1::keyDownCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
+void Gameplay::keyDownCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 	keyboard.keyDown[(int)keyCode] = true;
 }
 
-void Level1::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
+void Gameplay::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 	keyboard.keyDown[(int)keyCode] = false;
 	
 	typedef EventKeyboard::KeyCode key;
@@ -355,50 +355,50 @@ void Level1::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 }
 
 
-//void Level1::initControllerListener() {
+//void Gameplay::initControllerListener() {
 //	controllerListener = EventListenerController::create();
 //
-//	controllerListener->onAxisEvent = CC_CALLBACK_3(Level1::cAxisEventCallBack, this);
-//	controllerListener->onKeyDown = CC_CALLBACK_3(Level1::cKeyDownCallBack, this);
-//	controllerListener->onKeyUp = CC_CALLBACK_3(Level1::cKeyUpCallBack, this);
+//	controllerListener->onAxisEvent = CC_CALLBACK_3(Gameplay::cAxisEventCallBack, this);
+//	controllerListener->onKeyDown = CC_CALLBACK_3(Gameplay::cKeyDownCallBack, this);
+//	controllerListener->onKeyUp = CC_CALLBACK_3(Gameplay::cKeyUpCallBack, this);
 //
 //	_eventDispatcher->addEventListenerWithSceneGraphPriority(controllerListener, this);
 //}
 //
-//void Level1::cKeyDownCallBack(Controller* controller, int keyCode, Event* cEvent) {
+//void Gameplay::cKeyDownCallBack(Controller* controller, int keyCode, Event* cEvent) {
 //	gamepad.deviceID = controller->getDeviceId();
 //	gamepad.keyDown[keyCode] = true;
 //}
 //
-//void Level1::cKeyUpCallBack(Controller* controller, int keyCode, Event* cEvent) {
+//void Gameplay::cKeyUpCallBack(Controller* controller, int keyCode, Event* cEvent) {
 //	gamepad.deviceID = controller->getDeviceId();
 //	gamepad.keyDown[keyCode] = false;
 //
 //	cocos2d::log("Keycode: %i", keyCode);
 //}
 //
-//void Level1::cAxisEventCallBack(Controller* controller, int keyCode, Event* cEvent) {
+//void Gameplay::cAxisEventCallBack(Controller* controller, int keyCode, Event* cEvent) {
 //	gamepad.deviceID = controller->getDeviceId();
 //}
 
 
-//void Level1::checkUp() {
+//void Gameplay::checkUp() {
 //	
 //}
 //
-//void Level1::checkDown() {
+//void Gameplay::checkDown() {
 //	
 //}
 //
-//void Level1::checkLeft() {
+//void Gameplay::checkLeft() {
 //	
 //}
 //
-//void Level1::checkRight() {
+//void Gameplay::checkRight() {
 //	
 //}
 
-//void Level1::checkStart() {
+//void Gameplay::checkStart() {
 //	if (manager.getController(0)->isButtonPressed(SednaInput::START)) {
 //		this->unscheduleUpdate();
 //		

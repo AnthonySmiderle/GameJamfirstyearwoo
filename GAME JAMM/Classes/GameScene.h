@@ -24,7 +24,7 @@ struct Keyboard {
 //	bool keyDown[16];
 //};
 
-class Level1 : public cocos2d::Scene {
+class Gameplay : public cocos2d::Scene {
 public:
 	static cocos2d::Scene* createScene();
 	
@@ -32,7 +32,7 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 
-	CREATE_FUNC(Level1);
+	CREATE_FUNC(Gameplay);
 
 	void initSprites();
 	void initHUD();

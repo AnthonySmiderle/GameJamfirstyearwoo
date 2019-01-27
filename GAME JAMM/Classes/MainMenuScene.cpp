@@ -48,7 +48,7 @@ void MainMenu::initMenu() {
 
 	auto playButton = MenuItemLabel::create(playLabel, [&](Ref* sender) {
 		//auto helloWorldScene = HelloWorld::createScene();
-		auto gameScene = Level1::createScene();
+		auto gameScene = Gameplay::createScene();
 		director->replaceScene(TransitionFade::create(2.0f, gameScene));
 	});
 	auto exitButton = MenuItemLabel::create(exitLabel, [&](Ref* sender) {
