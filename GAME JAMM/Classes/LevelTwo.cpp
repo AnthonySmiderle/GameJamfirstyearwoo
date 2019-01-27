@@ -225,7 +225,10 @@ void LevelTwo::update(float dt) {
 
 //	if(playerHitCircle.getPosition().x > 110 && playerHitCircle.getPosition().x < 200)
 	if (isInKitchen) {
-		if (playerHitCircle.getPosition().x >= microBox.getPlaceToHide().getStartPosition().x) {
+		if (playerHitBox.getCentrePosition().x >= microBox.getPlaceToHide().getStartPosition().x &&
+			playerHitBox.getCentrePosition().x <= microBox.getPlaceToHide().getEndPosition().x &&
+			playerHitBox.getCentrePosition().y >= 150) {
+			
 			microwaving = true;
 			background->setVisible(false);
 			stupidMicrowave->setVisible(true);
@@ -270,7 +273,10 @@ void LevelTwo::update(float dt) {
 				isInDining = true;
 				isInKitchen = false;
 
-				playerHitBox.setNewPositions(Vec2(windowSize.x - 75, 110), Vec2(windowSize.x - 25, 310));
+				playerHitBox.setNewPositions(
+					Vec2(windowSize.x - playerHitBox.getWidth() - 10, playerHitBox.getStartPosition().y),
+					Vec2(windowSize.x - 10, playerHitBox.getEndPosition().y)
+				);
 				
 				background->setVisible(false);
 				dining->setVisible(true);
@@ -355,41 +361,75 @@ void LevelTwo::update(float dt) {
 			checkLeft();
 			checkRight();
 		}
-		if (playerHitCircle.getPosition().y == windowSize.y) {
+		if (playerHitBox.getCentrePosition().y == windowSize.y) {
 			isInHallway = true;
 			isInDining = false;
 
-			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, 10));
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x, origin.y + 10),
+				Vec2(playerHitBox.getEndPosition().x, origin.y + 10 + playerHitBox.getHeight())
+			);
+
 			hallway->setVisible(true);
 			dining->setVisible(false);
 		}
 
+		if (playerHitBox.getCentrePosition().x == windowSize.x) {
+			isInKitchen = true;
+			isInDining = false;
+
+			playerHitBox.setNewPositions(
+				Vec2(10, playerHitBox.getStartPosition().y),
+				Vec2(10 + playerHitBox.getWidth(), playerHitBox.getEndPosition().y)
+			);
+
+			background->setVisible(true);
+			dining->setVisible(false);
+			cabinet2.getPlaceToHide().getNode()->setVisible(false);
+		}
 
 	}
 	if (isInHallway) {
-		if (playerHitCircle.getPosition().y == windowSize.y) {
+
+		checkUp();
+		checkDown();
+		checkLeft();
+		checkRight();
+
+		if (playerHitBox.getCentrePosition().y == windowSize.y) {
 			isInGarage = true;
 			isInHallway = false;
 
-			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, 10));
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x, 10),
+				Vec2(playerHitBox.getEndPosition().x, 10 + playerHitBox.getHeight())
+			);
+
 			hallway->setVisible(false);
 			garage->setVisible(true);
 
 		}
-		if (playerHitCircle.getPosition().y == 0) {
+		if (playerHitBox.getCentrePosition().y == 0) {
 			isInDining = true;
 			isInHallway = false;
 
-			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, windowSize.y));
-			
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x, windowSize.y - 10 - playerHitBox.getHeight()),
+				Vec2(playerHitBox.getEndPosition().x, windowSize.y - 10)
+			);
+
 			dining->setVisible(true);
 			hallway->setVisible(false);
 		}
-		if (playerHitCircle.getPosition().x == windowSize.x) {
+		if (playerHitBox.getCentrePosition().x == windowSize.x) {
 			isInStair = true;
 			isInHallway = false;
 			
-			playerHitCircle.setPosition(cocos2d::Vec2(10, playerHitCircle.getPosition().y));
+			playerHitBox.setNewPositions(
+				Vec2(10, playerHitBox.getStartPosition().y),
+				Vec2(10 + playerHitBox.getWidth(), playerHitBox.getEndPosition().y)
+			);
+
 			stair->setVisible(true);
 			hallway->setVisible(false);
 
@@ -398,11 +438,22 @@ void LevelTwo::update(float dt) {
 
 	}
 	if (isInGarage) {
-		if (playerHitCircle.getPosition().y == 0) {
+
+
+		checkUp();
+		checkDown();
+		checkLeft();
+		checkRight();
+
+		if (playerHitBox.getCentrePosition().y == 0) {
 			isInHallway = true;
 			isInGarage = false;
 
-			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, windowSize.y));
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x, windowSize.y - 10 - playerHitBox.getHeight()),
+				Vec2(playerHitBox.getEndPosition().x, windowSize.y - 10)
+			);
+			
 			garage->setVisible(false);
 			hallway->setVisible(true);
 
@@ -410,12 +461,23 @@ void LevelTwo::update(float dt) {
 
 	}
 	if (isInStair) {
-		if (playerHitCircle.getPosition().x == 0) {
+
+		checkUp();
+		checkDown();
+		checkLeft();
+		checkRight();
+
+		if (playerHitBox.getCentrePosition().x == 0) {
 			isInHallway = true;
 			isInStair = false;
+			
+			playerHitBox.setNewPositions(
+				Vec2(windowSize.x - 10 - playerHitBox.getWidth(), playerHitBox.getStartPosition().y),
+				Vec2(windowSize.x - 10, playerHitBox.getEndPosition().y)
+			);
+			
 			stair->setVisible(false);
 			hallway->setVisible(true);
-			playerHitCircle.setPosition(cocos2d::Vec2(windowSize.x, playerHitCircle.getPosition().y));
 		}
 
 
@@ -457,8 +519,7 @@ void LevelTwo::update(float dt) {
 		//if (playerHitCircle.getPosition().x == 0 || score == 1000) {
 		//	Scene* topDownSceneOne = TopDownSceneOne::createScene();
 		//	director->replaceScene(topDownSceneOne);
-		//} 
-	}
+		//}
 }
 
 void LevelTwo::initMouseListener() {

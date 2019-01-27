@@ -36,6 +36,9 @@ cocos2d::Vec2 g3nts::PrimitiveRect::getEndPosition() const { return _endPos; }
 
 cocos2d::Vec2 g3nts::PrimitiveRect::getCentrePosition() const { return _startPos + (_endPos - _startPos) / 2.0f; }
 
+float g3nts::PrimitiveRect::getWidth()  { return _endPos.x - _startPos.x; }
+float g3nts::PrimitiveRect::getHeight() { return _endPos.y - _startPos.y; }
+
 
 
 g3nts::PrimitiveCircle::PrimitiveCircle(const cocos2d::Vec2& centrePos,	const float radius,	const float angle, const unsigned int segments, const bool drawRadius, const cocos2d::Color4F& colour)

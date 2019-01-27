@@ -26,6 +26,9 @@ namespace g3nts {
 		cocos2d::Vec2 getStartPosition() const;
 		cocos2d::Vec2 getEndPosition() const;
 		cocos2d::Vec2 getCentrePosition() const;
+		
+		float getWidth();
+		float getHeight();
 
 		void setNewPositions(cocos2d::Vec2& startPos, cocos2d::Vec2& endPos);
 
