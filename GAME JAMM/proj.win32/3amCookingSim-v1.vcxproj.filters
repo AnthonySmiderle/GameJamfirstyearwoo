@@ -54,6 +54,9 @@
     <ClCompile Include="..\Classes\HidingPlace.cpp">
       <Filter>src\Framework\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\LevelTwo.cpp">
+      <Filter>src\Scenes\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -75,6 +78,12 @@
       <Filter>src\Framework\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\HidingPlace.h">
+      <Filter>src\Framework\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\LevelTwo.h">
+      <Filter>src\Scenes\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\STRUCTS.h">
       <Filter>src\Framework\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
