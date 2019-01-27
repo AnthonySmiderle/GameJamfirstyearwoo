@@ -55,7 +55,7 @@ public:
 	/*void checkUp();
 	void checkDown();
 	void checkLeft();
-	void checkRight();
+	void checkRight();*/
 	
 
 	//void checkStart();
@@ -94,7 +94,6 @@ private:
 	SednaInput::XinputController* p1;
 	SednaInput::Stick sticks[2];*/
 
-	Sprite* scare;
 	Sprite* stupidMicrowave;
 	Sprite* background;
 	Sprite* scare;
@@ -113,14 +112,8 @@ private:
 	g3nts::PrimitiveCircle itemHitCircle1;
 	g3nts::PrimitiveCircle itemHitCircle2;
 	
-	g3nts::PrimitiveRect microwave;
-	g3nts::PrimitiveRect cabinet;
-	g3nts::PrimitiveRect momBox;
+
 	
-	int momTimer;
-	bool die = false;
-	bool isInRoom = false;
-	bool isHiding = false;
 	
 	Vec2 windowSize;
 	Vec2 origin;

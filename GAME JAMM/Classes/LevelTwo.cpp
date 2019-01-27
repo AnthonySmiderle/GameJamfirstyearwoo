@@ -38,10 +38,25 @@ bool LevelTwo::init() {
 void LevelTwo::onExit() { Scene::onExit(); }
 
 void LevelTwo::initSprites() {
-	cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
+	//cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
 
 	this->addChild(cabnet2.getPlaceToHide().getNode(), 1);
 	cabnet2.getPlaceToHide().getNode()->setVisible(false);
+
+	garage = Sprite::create("backgrounds/garage.png");
+	garage->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
+	garage->setVisible(false);
+	this->addChild(garage, 1);
+
+	stair = Sprite::create("backgrounds/stairs.png");
+	stair->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
+	stair->setVisible(false);
+	this->addChild(stair, 1);
+
+	hallway = Sprite::create("backgrounds/hallway.png");
+	hallway->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
+	hallway->setVisible(false);
+	this->addChild(hallway, 1);
 
 	dining = Sprite::create("backgrounds/dining.png");
 	dining->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
@@ -211,8 +226,12 @@ void LevelTwo::update(float dt) {
 			background->setVisible(false);
 			stupidMicrowave->setVisible(true);
 			scoreLabelInt->setString(std::to_string(score));
-
-
+			
+			//microwaveSound = cocos2d::experimental::AudioEngine::play2d("microwave.mp3");
+			//if (cocos2d::experimental::AudioEngine::getState(microwaveSound) != cocos2d::experimental::AudioEngine::AudioState::PLAYING)
+			//{
+			//	cocos2d::experimental::AudioEngine::play2d("microwave.mp3");
+			//}
 		}
 		else {
 			microwaving = false;
@@ -252,6 +271,68 @@ void LevelTwo::update(float dt) {
 
 			isHiding = true;
 		}
+		if (playerHitCircle.getPosition().y == windowSize.y) {
+			isInHallway = true;
+			isInDining = false;
+
+			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, 10));
+			hallway->setVisible(true);
+			dining->setVisible(false);
+		}
+
+
+	}
+	if (isInHallway) {
+		if (playerHitCircle.getPosition().y == windowSize.y) {
+			isInGarage = true;
+			isInHallway = false;
+
+			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, 10));
+			hallway->setVisible(false);
+			garage->setVisible(true);
+
+		}
+		if (playerHitCircle.getPosition().y == 0) {
+			isInDining = true;
+			isInHallway = false;
+
+			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, windowSize.y));
+			
+			dining->setVisible(true);
+			hallway->setVisible(false);
+		}
+		if (playerHitCircle.getPosition().x == windowSize.x) {
+			isInStair = true;
+			isInHallway = false;
+			
+			playerHitCircle.setPosition(cocos2d::Vec2(10, playerHitCircle.getPosition().y));
+			stair->setVisible(true);
+			hallway->setVisible(false);
+
+		}
+
+
+	}
+	if (isInGarage) {
+		if (playerHitCircle.getPosition().y == 0) {
+			isInHallway = true;
+			isInGarage = false;
+
+			playerHitCircle.setPosition(cocos2d::Vec2(playerHitCircle.getPosition().x, windowSize.y));
+			garage->setVisible(false);
+			hallway->setVisible(true);
+
+		}
+
+	}
+	if (isInStair) {
+		if (playerHitCircle.getPosition().x == 0) {
+			isInHallway = true;
+			isInStair = false;
+			stair->setVisible(false);
+			hallway->setVisible(true);
+			playerHitCircle.setPosition(cocos2d::Vec2(windowSize.x, playerHitCircle.getPosition().y));
+		}
 
 
 	}
@@ -274,7 +355,7 @@ void LevelTwo::update(float dt) {
 		//play different audio file
 
 	}
-	if (x >= 1000 && !isHiding) {
+	if (x == 1000 && !isHiding) {
 		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
 		scare->setVisible(true);
 		die = true;

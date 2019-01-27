@@ -85,6 +85,7 @@ private:
 	bool isInGarage = false;
 
 	/////////////////
+	int microwaveSound;
 	Label* scoreLabel;
 	Label* scoreLabelInt;
 	int x;

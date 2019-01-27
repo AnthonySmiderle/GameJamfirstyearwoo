@@ -276,7 +276,7 @@ void Gameplay::update(float dt) {
 				//play different audio file
 
 			}
-			if (momTimer >= 1000 && !isHiding) {
+			if (momTimer == 1000 && !isHiding) {
 				cocos2d::experimental::AudioEngine::stopAll();
 
 				cocos2d::experimental::AudioEngine::play2d("ree.mp3");
