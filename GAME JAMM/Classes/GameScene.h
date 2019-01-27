@@ -13,8 +13,6 @@
 
 USING_NS_CC;
 
-
-
 //struct Gamepad {
 //	int deviceID;
 //	bool keyDown[16];
