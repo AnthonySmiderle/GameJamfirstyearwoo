@@ -93,7 +93,9 @@ private:
 	std::vector<g3nts::PrimitiveCircle> inventory;
 
 	std::vector<g3nts::PrimitiveCircle> items;
-	g3nts::PrimitiveCircle itemHitCircle;
+	
+	g3nts::PrimitiveCircle itemHitCircle1;
+	g3nts::PrimitiveCircle itemHitCircle2;
 
 	Vec2 windowSize;
 	Vec2 origin;
