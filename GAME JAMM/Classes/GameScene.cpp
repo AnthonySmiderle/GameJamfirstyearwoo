@@ -2,7 +2,6 @@
 #include "MainMenuScene.h"
 #include <iostream>
 #include "AudioEngine.h"
-#include "TopDownSceneOne.h"
 #include "HidingPlace.h"
 
 Scene* Gameplay::sceneHandle = nullptr;
@@ -43,7 +42,7 @@ void Gameplay::initSprites() {
 
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
-	scoreLabel = Label::create("Time Left:", "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
+	scoreLabel = Label::create("Time:", "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
 	scoreLabel->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height));
 
 	scoreLabelInt = Label::create(std::to_string(score), "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
@@ -216,7 +215,7 @@ void Gameplay::update(float dt) {
 		score++;
 
 	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && !keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
-		
+
 		hide->setVisible(true);
 	}
 	else
@@ -252,7 +251,7 @@ void Gameplay::update(float dt) {
 		scare->setVisible(true);
 		die = true;
 	}
-	if (x >= 1100 && die)
+	if (x == 1500 && die || x == 2000 && die)
 		exit(0);
 	else if (x == 1500 && !die) {
 		momBox.getNode()->setVisible(false);
@@ -265,10 +264,10 @@ void Gameplay::update(float dt) {
 	checkRight();
 	//checkStart();
 
-	if (playerHitCircle.getPosition().x == 0 || score == 1000) {
-		Scene* topDownSceneOne = TopDownSceneOne::createScene();
-		director->replaceScene(topDownSceneOne);
-	}
+	//if (playerHitCircle.getPosition().x == 0 || score == 1000) {
+	//	Scene* topDownSceneOne = TopDownSceneOne::createScene();
+	//	director->replaceScene(topDownSceneOne);
+	//}
 }
 
 void Gameplay::initMouseListener() {
