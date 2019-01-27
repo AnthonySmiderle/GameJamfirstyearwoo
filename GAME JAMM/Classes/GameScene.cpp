@@ -17,7 +17,7 @@ bool Gameplay::init() {
 
 	srand(time(0));
 	director = Director::getInstance();
-	x = rand() % 100;
+	momTimer = rand() % 100;
 
 	windowSize = director->getWinSizeInPixels();
 	origin = director->getVisibleOrigin();
@@ -39,34 +39,40 @@ void Gameplay::onExit() { Scene::onExit(); }
 void Gameplay::initSprites() {
 	Vec2 windowSize = director->getWinSizeInPixels();
 
-
-	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	playerHitCircle = g3nts::PrimitiveCircle(Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-
-	scare = Sprite::create("mom.png");
-	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-	cameraTarget = Sprite::create();
-
+	playerHitBox = g3nts::PrimitiveRect(Vec2(200, 200), Vec2(250, 350), Color4F(1, 1, 1, 1));
+	
+	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
+	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
+	
 	items.push_back(itemHitCircle1);
 	items.push_back(itemHitCircle2);
+	
+	cabinet = g3nts::PrimitiveRect(Vec2(35, 210), Vec2(110, 350));
+	momBox = g3nts::PrimitiveRect(Vec2(1000, 200), Vec2(1100, 500), Color4F(0, 1, 0, 1));
+	microwave = g3nts::PrimitiveRect(Vec2(395, 370), Vec2(490, 435), Color4F(0, 1, 1, 1));
 
-	this->addChild(cabnet.getNode(), 1);
-	this->addChild(momBox.getNode(), 2);
-	momBox.getNode()->setVisible(false);
+	scare = Sprite::create("mom.png");
+	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 
-	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
-	this->addChild(playerHitCircle.getNode(), 1);
-
+	// Add everything to the scene
 	this->addChild(background, -100);
+	
+	this->addChild(playerHitBox.getNode(), 10);
+	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode(), 5);
+
+	this->addChild(cabinet.getNode(), 1);
+	this->addChild(microwave.getNode(), 1);
+	this->addChild(momBox.getNode(), 2);
+
 	this->addChild(scare, 1000);
+	
 	scare->setVisible(false);
-	this->addChild(cameraTarget);
+	momBox.getNode()->setVisible(false);
 }
 
 void Gameplay::initPauseMenu() {
@@ -97,9 +103,10 @@ void Gameplay::togglePause() {
 	paused = !paused;
 
 	if (paused) {
-		playerPos = playerHitCircle.getPosition();
+		playerStart = playerHitBox.getStartPosition();
+		playerEnd = playerHitBox.getEndPosition();
 
-		playerHitCircle.getNode()->setVisible(false);
+		playerHitBox.getNode()->setVisible(false);
 		HUD->setVisible(false);
 		for (g3nts::PrimitiveCircle item : items) {
 			item.getNode()->setVisible(false);
@@ -111,9 +118,9 @@ void Gameplay::togglePause() {
 		pauseMenu->setVisible(false);
 		HUD->setVisible(true);
 
-		playerHitCircle.setPosition(playerPos);
-		playerHitCircle.redraw();
-		playerHitCircle.getNode()->setVisible(true);
+		playerHitBox.setNewPositions(playerStart, playerEnd);
+		playerHitBox.redraw();
+		playerHitBox.getNode()->setVisible(true);
 		for (g3nts::PrimitiveCircle item : items) {
 			item.getNode()->setVisible(true);
 		}
@@ -137,13 +144,13 @@ void Gameplay::initHUD() {
 void Gameplay::update(float dt) {
 
 	//manager.update();
-
-
-	x++;
+	
+	momTimer++;
 
 	for (int i = 0; i < items.size(); i++) {
-		if (g3nts::isColliding(playerHitCircle, items[i])) {
+		items[i].redraw();
 
+		if (g3nts::isColliding(playerHitBox, items[i])) {
 			if (inventory.size() == 0) {
 				items[i].getNode()->setVisible(false);
 
@@ -165,32 +172,23 @@ void Gameplay::update(float dt) {
 		item.redraw();
 	}
 
-	//checkUp();
-	//checkDown();
-	checkLeft();
-	checkRight();
-
-
-
-	//checkStart();
-
-	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
-
+	if (playerHitBox.getCentrePosition().x > 35 && playerHitBox.getCentrePosition().x < 110 &&
+		keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE])
 		isHiding = true;
-	}
 	else
 		isHiding = false;
-	if (x == 700) {
+
+	if (momTimer == 700) {
 		cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
 
 	}
-	if (x == 1000 && !isHiding) {
+	if (momTimer == 1000 && !isHiding) {
 		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
 		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
 		scare->setVisible(true);
 		die = true;
 	}
-	else if (x == 1000 && isHiding) {
+	else if (momTimer == 1000 && isHiding) {
 
 		momBox.getNode()->setVisible(true);
 		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
@@ -198,19 +196,36 @@ void Gameplay::update(float dt) {
 		//play different audio file
 
 	}
-	if (x == 1100 && die)
+	if (momTimer == 1100 && die)
 		exit(0);
-	else if (x == 1500 && !die) {
+	else if (momTimer == 1500 && !die) {
 		momBox.getNode()->setVisible(false);
-		x = rand() % 100;
+		momTimer = rand() % 100;
 	}
 
-	checkUp();
-	checkDown();
-	checkLeft();
-	checkRight();
-	//checkStart();
+	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_UP)
+		|| */keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_W]) {
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, 5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, 5));
+		playerHitBox.redraw();
+	}
 
+	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)
+		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_S]) {
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, -5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, -5));
+		playerHitBox.redraw();
+	}
+
+	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)
+		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_A]) {
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(-5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(-5, 0));
+		playerHitBox.redraw();
+	}
+
+	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)
+		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_D]) {
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(5, 0));
+		playerHitBox.redraw();
+	}
 }
 
 void Gameplay::initMouseListener() {
@@ -277,16 +292,18 @@ void Gameplay::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 		togglePause();
 		break;
 	
-	case key::KEY_SPACE:
+	case key::KEY_E:
 		if (inventory.size() > 0) {
-			inventory[0].getNode()->setLocalZOrder(0);
-			inventory[0].setPosition(Vec2(origin.x + playerHitCircle.getPosition().x + playerHitCircle.getRadius() + 5,
-										  origin.y + playerHitCircle.getPosition().y - playerHitCircle.getRadius() - 10));
+			inventory[0].getNode()->setLocalZOrder(5);
+			inventory[0].setPosition(Vec2(origin.x + playerHitBox.getEndPosition().x + 20,
+										  origin.y + playerHitBox.getStartPosition().y - 20));
 			inventory[0].redraw();
 
 			items.push_back(inventory[0]);
 			inventory.erase(inventory.begin());
 		}
+
+		break;
 	}
 
 }
@@ -319,37 +336,21 @@ void Gameplay::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 //}
 
 
-void Gameplay::checkUp() {
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_UP)
-		|| */keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_W]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(0, 5));
-		playerHitCircle.redraw();
-	}
-}
-
-void Gameplay::checkDown() {
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)
-		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_S]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(0, -5));
-		playerHitCircle.redraw();
-	}
-}
-
-void Gameplay::checkLeft() {
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)
-		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_A]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(-5, 0));
-		playerHitCircle.redraw();
-	}
-}
-
-void Gameplay::checkRight() {
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)
-		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_D]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(5, 0));
-		playerHitCircle.redraw();
-	}
-}
+//void Gameplay::checkUp() {
+//	
+//}
+//
+//void Gameplay::checkDown() {
+//	
+//}
+//
+//void Gameplay::checkLeft() {
+//	
+//}
+//
+//void Gameplay::checkRight() {
+//	
+//}
 
 //void Gameplay::checkStart() {
 //	if (manager.getController(0)->isButtonPressed(SednaInput::START)) {
