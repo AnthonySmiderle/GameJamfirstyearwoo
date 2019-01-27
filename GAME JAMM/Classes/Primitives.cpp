@@ -14,10 +14,27 @@ g3nts::PrimitiveCapsule::PrimitiveCapsule() {}
 
 // CONSTRUCTORS WITH PARAMETERS
 g3nts::PrimitiveRect::PrimitiveRect(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos, const cocos2d::Color4F& colour)
-: _node(cocos2d::DrawNode::create()) { _node->drawRect(startPos, endPos, colour); }
+	: _node(cocos2d::DrawNode::create()), _startPos(startPos), _endPos(endPos), _colour(colour) {
+	_node->drawRect(startPos, endPos, colour);
+}
 
 g3nts::PrimitiveRect::PrimitiveRect(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos)
-: PrimitiveRect(startPos, endPos, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
+	: PrimitiveRect(startPos, endPos, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
+
+void g3nts::PrimitiveRect::redraw() {
+	_node->clear();
+	_node->drawRect(_startPos, _endPos, _colour);
+}
+
+void g3nts::PrimitiveRect::setNewPositions(cocos2d::Vec2& startPos, cocos2d::Vec2& endPos) {
+	_startPos = startPos;
+	_endPos = endPos;
+}
+
+cocos2d::Vec2 g3nts::PrimitiveRect::getStartPosition() const { return _startPos; }
+cocos2d::Vec2 g3nts::PrimitiveRect::getEndPosition() const { return _endPos; }
+
+cocos2d::Vec2 g3nts::PrimitiveRect::getCentrePosition() const { return _startPos + (_endPos - _startPos) / 2.0f; }
 
 
 

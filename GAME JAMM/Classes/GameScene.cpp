@@ -2,6 +2,8 @@
 #include "MainMenuScene.h"
 #include <iostream>
 #include "AudioEngine.h"
+#include "TopDownSceneOne.h"
+#include "HidingPlace.h"
 
 Scene* Gameplay::sceneHandle = nullptr;
 
@@ -37,6 +39,23 @@ bool Gameplay::init() {
 void Gameplay::onExit() { Scene::onExit(); }
 
 void Gameplay::initSprites() {
+	cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
+
+	background = Sprite::create("backgrounds/MainMenuBGdark.png");
+	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
+	scoreLabel = Label::create("Time Left:", "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
+	scoreLabel->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height));
+
+	scoreLabelInt = Label::create(std::to_string(score), "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
+	scoreLabelInt->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height - 30));
+	this->addChild(scoreLabelInt, 100);
+
+	this->addChild(scoreLabel, 100);
+	stupidMicrowave->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
+	this->addChild(stupidMicrowave, -100);
+	stupidMicrowave->setVisible(false);
+	this->addChild(microBox.getPlaceToHide().getNode(), 1);
+
 	Vec2 windowSize = director->getWinSizeInPixels();
 	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
@@ -51,7 +70,6 @@ void Gameplay::initSprites() {
 
 	scare = Sprite::create("mom.png");
 	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
-	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -172,14 +190,31 @@ void Gameplay::update(float dt) {
 
 	//checkUp();
 	//checkDown();
-	checkLeft();
-	checkRight();
-
-
+	//checkLeft();
+	//checkRight();
+	//
 
 	//checkStart();
 
 //	if(playerHitCircle.getPosition().x > 110 && playerHitCircle.getPosition().x < 200)
+
+	if (playerHitCircle.getPosition().x >= microBox.getPlaceToHide().getStartPosition().x) {
+		microwaving = true;
+		background->setVisible(false);
+		stupidMicrowave->setVisible(true);
+		scoreLabelInt->setString(std::to_string(score));
+
+
+	}
+	else {
+		microwaving = false;
+		background->setVisible(true);
+		stupidMicrowave->setVisible(false);
+
+	}
+	if (microwaving)
+		score++;
+
 	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && !keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
 		
 		hide->setVisible(true);
@@ -194,11 +229,12 @@ void Gameplay::update(float dt) {
 	else
 		isHiding = false;
 	if (x == 700) {
-		cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
+		cocos2d::experimental::AudioEngine::stop(1);
+		cocos2d::experimental::AudioEngine::play2d("superMomMusic.mp3");
 
 	}
 	if (x == 1000 && !isHiding) {
-		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
+		cocos2d::experimental::AudioEngine::play2d("superMomMusic.mp3");
 		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
 		scare->setVisible(true);
 		die = true;
@@ -211,19 +247,28 @@ void Gameplay::update(float dt) {
 		//play different audio file
 
 	}
-	if (x == 1100 && die)
+	if (x >= 1000 && !isHiding) {
+		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
+		scare->setVisible(true);
+		die = true;
+	}
+	if (x >= 1100 && die)
 		exit(0);
 	else if (x == 1500 && !die) {
 		momBox.getNode()->setVisible(false);
 		x = rand() % 100;
 	}
 
-	checkUp();
-	checkDown();
+	//checkUp();
+	//checkDown();
 	checkLeft();
 	checkRight();
 	//checkStart();
 
+	if (playerHitCircle.getPosition().x == 0 || score == 1000) {
+		Scene* topDownSceneOne = TopDownSceneOne::createScene();
+		director->replaceScene(topDownSceneOne);
+	}
 }
 
 void Gameplay::initMouseListener() {
@@ -363,6 +408,10 @@ void Gameplay::checkRight() {
 		playerHitCircle.redraw();
 	}
 }
+
+
+
+
 
 //void Gameplay::checkStart() {
 //	if (manager.getController(0)->isButtonPressed(SednaInput::START)) {
