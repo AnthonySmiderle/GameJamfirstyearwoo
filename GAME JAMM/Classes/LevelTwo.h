@@ -1,24 +1,22 @@
 #pragma once
-
-#ifndef __GAME_SCENE_H__
-#define __GAME_SCENE_H__
-
 #include "cocos2d.h"
 #include "Primitives.h"
 #include <cstdio>
-#include "STRUCTS.h"
 #include <random>
+#include "STRUCTS.h"
 #include "HidingPlace.h"
 //#include "XinputManager.h"
 
 USING_NS_CC;
+
+
 
 //struct Gamepad {
 //	int deviceID;
 //	bool keyDown[16];
 //};
 
-class Gameplay : public cocos2d::Scene {
+class LevelTwo : public cocos2d::Scene {
 public:
 	static cocos2d::Scene* createScene();
 	
@@ -26,7 +24,9 @@ public:
 	virtual void onEnter();
 	virtual void onExit();
 
-	CREATE_FUNC(Gameplay);
+
+
+	CREATE_FUNC(LevelTwo);
 
 	void initSprites();
 	void initHUD();
@@ -52,7 +52,7 @@ public:
 	//void cKeyUpCallBack(Controller* controller, int keyCode, Event* cEvent);
 	//void cAxisEventCallBack(Controller* controller, int keyCode, Event* cEvent);
 	
-	/*void checkUp();
+	void checkUp();
 	void checkDown();
 	void checkLeft();
 	void checkRight();
@@ -60,21 +60,43 @@ public:
 
 	//void checkStart();
 
-private:
-	Label* promptNextLevel;
+	bool isInHidingPlace(g3nts::PrimitiveCircle c, HidingPlace h);
 
+private:
+
+
+
+	/////////////////
+
+	HidingPlace cabnet2{ cocos2d::Vec2(35,600),cocos2d::Vec2(110,700) };
+
+
+
+	Sprite* dining;
+	Sprite* hallway;
+	Sprite* stair;
+	Sprite* garage;
+
+
+	bool isInKitchen = true;
+	bool isInDining = false;
+	bool isInHallway = false;
+	bool isInStair = false;
+	bool isInGarage = false;
+
+	/////////////////
 	Label* scoreLabel;
 	Label* scoreLabelInt;
-	int momTimer;
+	int x;
 	int score = 0;
 	bool die = false;
 	bool isInRoom = false;
 	bool isHiding = false;
 	bool microwaving = false;
-	g3nts::PrimitiveRect cabinet;
-	g3nts::PrimitiveRect momBox;
+	g3nts::PrimitiveRect cabnet{ cocos2d::Vec2(35,210),cocos2d::Vec2(110,350) };
+	g3nts::PrimitiveRect momBox{ cocos2d::Vec2(1000,200),cocos2d::Vec2(1100,500),cocos2d::Color4F(0,1,0,1) };
 	Label* hide;
-	HidingPlace microBox;
+	HidingPlace microBox{ cocos2d::Vec2(390,400),cocos2d::Vec2(520,430) };
 
 	Director* director;
 	static cocos2d::Scene* sceneHandle;
@@ -89,46 +111,31 @@ private:
 
 	/*EventListenerController* controllerListener;
 	Gamepad gamepad;*/
-	
-	/*SednaInput::XinputManager manager;
-	SednaInput::XinputController* p1;
-	SednaInput::Stick sticks[2];*/
 
 	Sprite* scare;
 	Sprite* stupidMicrowave;
 	Sprite* background;
-	Sprite* scare;
+	Sprite* cameraTarget;
 
 	bool paused = false;
 	Menu* pauseMenu;
 	Menu* HUD;
 
-	g3nts::PrimitiveRect playerHitBox;
-	Vec2 playerStart, playerEnd;
+	g3nts::PrimitiveCircle playerHitCircle;
+	Vec2 playerPos;
 
 	std::vector<g3nts::PrimitiveCircle> inventory;
 
 	std::vector<g3nts::PrimitiveCircle> items;
 	
-	g3nts::PrimitiveCircle itemHitCircle1;
-	g3nts::PrimitiveCircle itemHitCircle2;
-	
-	g3nts::PrimitiveRect microwave;
-	g3nts::PrimitiveRect cabinet;
-	g3nts::PrimitiveRect momBox;
-	
-	int momTimer;
-	bool die = false;
-	bool isInRoom = false;
-	bool isHiding = false;
-	
+	//g3nts::PrimitiveCircle itemHitCircle1;
+	//g3nts::PrimitiveCircle itemHitCircle2;
+
 	Vec2 windowSize;
 	Vec2 origin;
-	float topBoundary = 280.0f;
 	
 	/*SednaInput::XinputController* p1;
 	SednaInput::XinputManager manager;
 	SednaInput::Stick sticks[2];*/
 };
 
-#endif // __GAME_SCENE_H__
