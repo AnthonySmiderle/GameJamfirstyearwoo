@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "MainMenuScene.h"
 #include <iostream>
+#include "AudioEngine.h"
 
 Scene* Gameplay::sceneHandle = nullptr;
 
@@ -14,8 +15,9 @@ void Gameplay::onEnter() { Scene::onEnter(); }
 bool Gameplay::init() {
 	if(!Scene::init()) return false;
 
+	srand(time(0));
 	director = Director::getInstance();
-	
+	x = rand() % 100;
 	initSprites();
 	initPauseMenu();
 	initHUD();
@@ -31,11 +33,16 @@ bool Gameplay::init() {
 void Gameplay::onExit() { Scene::onExit(); }
 
 void Gameplay::initSprites() {
+	cocos2d::experimental::AudioEngine::play2d("mMusic.mp3",true);
+
+
 	Vec2 windowSize = director->getWinSizeInPixels();
 
 	itemHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	playerHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 
+	scare = Sprite::create("devito.jpg");
+	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -44,10 +51,16 @@ void Gameplay::initSprites() {
 
 	items.push_back(itemHitCircle);
 
+	this->addChild(cabnet.getNode(), 1);
+	this->addChild(momBox.getNode(), 2);
+	momBox.getNode()->setVisible(false);
+
 	this->addChild(itemHitCircle.getNode(), 1);
 	this->addChild(playerHitCircle.getNode(), 1);
 
 	this->addChild(background, -100);
+	this->addChild(scare, 1000);
+	scare->setVisible(false);
 	this->addChild(cameraTarget);
 }
 
@@ -122,6 +135,9 @@ void Gameplay::update(float dt) {
 
 	//manager.update();
 
+
+	x++;
+
 	for (int i = 0; i < items.size(); i++) {
 		if (g3nts::isColliding(playerHitCircle, items[i])) {
 			removeChild(items[i].getNode(), 1);
@@ -131,20 +147,40 @@ void Gameplay::update(float dt) {
 		}
 	}
 
-	checkUp();
-	checkDown();
+
+	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
+
+		isHiding = true;
+	}
+	else
+		isHiding = false;
+
+	if (x == 500 && !isHiding) {
+		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
+		scare->setVisible(true);
+		die = true;
+	}
+	else if (x == 500 && isHiding) {
+
+		momBox.getNode()->setVisible(true);
+		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
+
+		//play different audio file
+
+	}
+	if (x == 700 && die)
+		exit(0);
+	else if (x == 1000 && !die) {
+		momBox.getNode()->setVisible(false);
+		x = rand() % 100;
+	}
+
+	//checkUp();
+	//checkDown();
 	checkLeft();
 	checkRight();
 	//checkStart();
 
-
-
-
-
-
-
-
-	
 }
 
 void Gameplay::initMouseListener() {

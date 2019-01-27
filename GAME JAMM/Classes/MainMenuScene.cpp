@@ -1,4 +1,3 @@
-#include "HelloWorldScene.h"
 #include "GameScene.h"
 #include "MainMenuScene.h"
 #include "SimpleAudioEngine.h"
@@ -30,6 +29,7 @@ bool MainMenu::init() {
 }
 
 void MainMenu::initMenu() {
+
 	Vec2 windowSize = director->getWinSizeInPixels();
 
 	background = Sprite::create("backgrounds/MainMenuBG.png");
