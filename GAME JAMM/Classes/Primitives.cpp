@@ -14,10 +14,28 @@ g3nts::PrimitiveCapsule::PrimitiveCapsule() {}
 
 // CONSTRUCTORS WITH PARAMETERS
 g3nts::PrimitiveRect::PrimitiveRect(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos, const cocos2d::Color4F& colour)
-: _node(cocos2d::DrawNode::create()) { _node->drawRect(startPos, endPos, colour); }
+: _node(cocos2d::DrawNode::create()), _startPos(startPos), _endPos(endPos), _colour(colour) {
+	_node->drawRect(startPos, endPos, colour);
+}
 
 g3nts::PrimitiveRect::PrimitiveRect(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos)
 : PrimitiveRect(startPos, endPos, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
+
+void g3nts::PrimitiveRect::redraw() {
+	_node->clear();
+	_node->drawRect(_startPos, _endPos, _colour);
+}
+
+void g3nts::PrimitiveRect::setNewPositions(cocos2d::Vec2& startPos, cocos2d::Vec2& endPos) {
+	_startPos = startPos;
+	_endPos = endPos;
+}
+
+cocos2d::Vec2 g3nts::PrimitiveRect::getStartPosition() const { return _startPos; }
+cocos2d::Vec2 g3nts::PrimitiveRect::getEndPosition() const   { return _endPos; }
+
+cocos2d::Vec2 g3nts::PrimitiveRect::getCentrePosition() const { return _startPos + (_endPos - _startPos) / 2.0f; }
+
 
 
 
@@ -32,6 +50,14 @@ g3nts::PrimitiveCircle::PrimitiveCircle(const cocos2d::Vec2& centrePos, const fl
 g3nts::PrimitiveCircle::PrimitiveCircle(const cocos2d::Vec2& centrePos, const float radius)
 : PrimitiveCircle(centrePos, radius, 1.0f, 20, false, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
 
+void g3nts::PrimitiveCircle::redraw() {
+	_node->clear();
+	_node->drawCircle(_position, _radius, _angle, _segments, false, _colour);
+}
+cocos2d::Vec2 g3nts::PrimitiveCircle::getPosition() const { return _position; }
+float g3nts::PrimitiveCircle::getRadius() const { return _radius; }
+
+void g3nts::PrimitiveCircle::setPosition(cocos2d::Vec2& position) { _position = position; }
 
 
 
@@ -40,6 +66,10 @@ g3nts::PrimitiveLine::PrimitiveLine(const cocos2d::Vec2& startPos, const cocos2d
 
 g3nts::PrimitiveLine::PrimitiveLine(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos)
 : PrimitiveLine(startPos, endPos, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
+
+
+
+
 
 g3nts::PrimitiveCapsule::PrimitiveCapsule(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos, const float radius, const cocos2d::Color4F& colour)
 : _node(cocos2d::DrawNode::create()) {
@@ -55,20 +85,17 @@ g3nts::PrimitiveCapsule::PrimitiveCapsule(const cocos2d::Vec2& startPos, const c
 g3nts::PrimitiveCapsule::PrimitiveCapsule(const cocos2d::Vec2& startPos, const cocos2d::Vec2& endPos, const float radius)
 	: PrimitiveCapsule(startPos, endPos, radius, cocos2d::Color4F(1.0f, 0.0f, 0.0f, 1.0f)) {}
 
+
+
+
+
+
 // NODE GETTERS (SO WE CAN ADD TO THE SCREEN)
 cocos2d::DrawNode* g3nts::PrimitiveRect::getNode() const    { return _node; }
 cocos2d::DrawNode* g3nts::PrimitiveCircle::getNode() const  { return _node; }
 cocos2d::DrawNode* g3nts::PrimitiveLine::getNode() const    { return _node; }
 cocos2d::DrawNode* g3nts::PrimitiveCapsule::getNode() const { return _node; }
 
-void g3nts::PrimitiveCircle::redraw() {
-	_node->clear();
-	_node->drawCircle(_position, _radius, _angle, _segments, false, _colour);
-}
-cocos2d::Vec2 g3nts::PrimitiveCircle::getPosition() const { return _position; }
-float g3nts::PrimitiveCircle::getRadius() const { return _radius; }
-
-void g3nts::PrimitiveCircle::setPosition(cocos2d::Vec2& position) { _position = position; }
 
 
 
@@ -79,4 +106,19 @@ bool g3nts::isColliding(g3nts::PrimitiveCircle& c1, g3nts::PrimitiveCircle& c2){
 
 	if (squaredDistance <= squaredRadii) return true;
 	return false;
+}
+
+bool g3nts::isColliding(g3nts::PrimitiveRect& r1, g3nts::PrimitiveCircle& c2) {
+	cocos2d::Vec2 test;
+
+	if (c2.getPosition().x < r1.getStartPosition().x) test.x = r1.getStartPosition().x;
+	else if (c2.getPosition().x > r1.getEndPosition().x) test.x = r1.getEndPosition().x;
+	else test.x = c2.getPosition().x;
+	
+	if (c2.getPosition().y < r1.getStartPosition().y) test.y = r1.getStartPosition().y;
+	else if (c2.getPosition().y > r1.getEndPosition().y) test.y = r1.getEndPosition().y;
+	else test.y = c2.getPosition().y;
+
+	float distanceSq = test.getDistanceSq(c2.getPosition());
+	return distanceSq <= (c2.getRadius() * c2.getRadius());
 }
