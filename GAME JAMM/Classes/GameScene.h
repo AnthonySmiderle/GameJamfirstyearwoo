@@ -7,6 +7,7 @@
 #include "Primitives.h"
 #include <cstdio>
 #include <random>
+#include "HidingPlace.h"
 //#include "XinputManager.h"
 
 USING_NS_CC;
@@ -62,6 +63,7 @@ public:
 	void checkDown();
 	void checkLeft();
 	void checkRight();
+	
 
 	//void checkStart();
 
@@ -69,13 +71,18 @@ public:
 
 private:
 
+	Label* scoreLabel;
+	Label* scoreLabelInt;
 	int x;
+	int score = 0;
 	bool die = false;
 	bool isInRoom = false;
 	bool isHiding = false;
+	bool microwaving = false;
 	g3nts::PrimitiveRect cabnet{ cocos2d::Vec2(35,210),cocos2d::Vec2(110,350) };
 	g3nts::PrimitiveRect momBox{ cocos2d::Vec2(1000,200),cocos2d::Vec2(1100,500),cocos2d::Color4F(0,1,0,1) };
-
+	Label* hide;
+	HidingPlace microBox{ cocos2d::Vec2(390,400),cocos2d::Vec2(520,430) };
 
 	Director* director;
 	static cocos2d::Scene* sceneHandle;
@@ -92,6 +99,7 @@ private:
 	Gamepad gamepad;*/
 
 	Sprite* scare;
+	Sprite* stupidMicrowave;
 	Sprite* background;
 	Sprite* cameraTarget;
 

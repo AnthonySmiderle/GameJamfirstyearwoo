@@ -14,16 +14,25 @@ namespace g3nts {
 		// CONSTRUCTORS/DECONSTRUCTORS
 		PrimitiveRect();
 		PrimitiveRect(const cocos2d::Vec2& startPos,
-					  const cocos2d::Vec2& endPos,
-					  const cocos2d::Color4F& colour);
+			const cocos2d::Vec2& endPos,
+			const cocos2d::Color4F& colour);
 		PrimitiveRect(const cocos2d::Vec2& startPos,
-					  const cocos2d::Vec2& endPos);
+			const cocos2d::Vec2& endPos);
 
 		// MEMBER FUNCTIONS
+		void redraw();
+
 		cocos2d::DrawNode* getNode() const;
+		cocos2d::Vec2 getStartPosition() const;
+		cocos2d::Vec2 getEndPosition() const;
+		cocos2d::Vec2 getCentrePosition() const;
+
+		void setNewPositions(cocos2d::Vec2& startPos, cocos2d::Vec2& endPos);
 
 	private:
 		cocos2d::DrawNode* _node;
+		cocos2d::Vec2 _startPos, _endPos;
+		cocos2d::Color4F _colour;
 
 	};
 
@@ -100,4 +109,6 @@ namespace g3nts {
 	};
 
 	bool isColliding(PrimitiveCircle& c1, PrimitiveCircle& c2);
+	
+
 }
