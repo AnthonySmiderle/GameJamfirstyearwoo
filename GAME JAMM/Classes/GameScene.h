@@ -19,10 +19,10 @@ struct Keyboard {
 	bool keyDown[256];
 };
 
-struct Gamepad {
-	int deviceID;
-	bool keyDown[16];
-};
+//struct Gamepad {
+//	int deviceID;
+//	bool keyDown[16];
+//};
 
 class Gameplay : public cocos2d::Scene {
 public:
@@ -88,12 +88,11 @@ private:
 	EventListenerKeyboard* keyboardListener;
 	Keyboard keyboard;
 
-	EventListenerController* controllerListener;
-	Gamepad gamepad;
+	/*EventListenerController* controllerListener;
+	Gamepad gamepad;*/
 
 	Sprite* scare;
 	Sprite* background;
-
 	Sprite* cameraTarget;
 
 	bool paused = false;
@@ -103,8 +102,15 @@ private:
 	g3nts::PrimitiveCircle playerHitCircle;
 	Vec2 playerPos;
 
+	std::vector<g3nts::PrimitiveCircle> inventory;
+
 	std::vector<g3nts::PrimitiveCircle> items;
-	g3nts::PrimitiveCircle itemHitCircle;
+	
+	g3nts::PrimitiveCircle itemHitCircle1;
+	g3nts::PrimitiveCircle itemHitCircle2;
+
+	Vec2 windowSize;
+	Vec2 origin;
 	
 	/*SednaInput::XinputController* p1;
 	SednaInput::XinputManager manager;

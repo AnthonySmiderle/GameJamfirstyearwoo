@@ -32,7 +32,7 @@ void MainMenu::initMenu() {
 
 	Vec2 windowSize = director->getWinSizeInPixels();
 
-	background = Sprite::create("backgrounds/MainMenuBG.png");
+	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 

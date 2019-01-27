@@ -18,6 +18,10 @@ bool Gameplay::init() {
 	srand(time(0));
 	director = Director::getInstance();
 	x = rand() % 100;
+
+	windowSize = director->getWinSizeInPixels();
+	origin = director->getVisibleOrigin();
+
 	initSprites();
 	initPauseMenu();
 	initHUD();
@@ -33,29 +37,30 @@ bool Gameplay::init() {
 void Gameplay::onExit() { Scene::onExit(); }
 
 void Gameplay::initSprites() {
-	cocos2d::experimental::AudioEngine::play2d("mMusic.mp3",true);
-
-
 	Vec2 windowSize = director->getWinSizeInPixels();
 
-	itemHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	playerHitCircle = g3nts::PrimitiveCircle(cocos2d::Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 
-	scare = Sprite::create("devito.jpg");
+	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500,200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	playerHitCircle = g3nts::PrimitiveCircle(Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+
+	scare = Sprite::create("mom.png");
 	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
+	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 
 	cameraTarget = Sprite::create();
 
-	items.push_back(itemHitCircle);
+	items.push_back(itemHitCircle1);
+	items.push_back(itemHitCircle2);
 
 	this->addChild(cabnet.getNode(), 1);
 	this->addChild(momBox.getNode(), 2);
 	momBox.getNode()->setVisible(false);
 
-	this->addChild(itemHitCircle.getNode(), 1);
+	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
 	this->addChild(playerHitCircle.getNode(), 1);
 
 	this->addChild(background, -100);
@@ -121,13 +126,11 @@ void Gameplay::quitToMainMenu() {
 }
 
 void Gameplay::initHUD() {
-	Vec2 windowSize = director->getWinSizeInPixels();
-
 	MenuItemImage* inventoryItem = MenuItemImage::create("square.png", "square.png");
 	inventoryItem->setPosition(windowSize.x / 2.0f - inventoryItem->getContentSize().width, -windowSize.y / 2.0f +inventoryItem->getContentSize().height);
 
 	HUD = Menu::create(inventoryItem, NULL);
-	this->addChild(HUD, 100);
+	this->addChild(HUD, 99);
 	HUD->setVisible(true);
 }
 
@@ -140,13 +143,36 @@ void Gameplay::update(float dt) {
 
 	for (int i = 0; i < items.size(); i++) {
 		if (g3nts::isColliding(playerHitCircle, items[i])) {
-			removeChild(items[i].getNode(), 1);
-			items[i].getNode()->clear();
-			items.erase(items.begin() + i);
-			i--;
+
+			if (inventory.size() == 0) {
+				items[i].getNode()->setVisible(false);
+
+				inventory.push_back(items[i]);
+				items.erase(items.begin() + i);
+				i--;
+
+			}
 		}
 	}
 
+
+	for (g3nts::PrimitiveCircle item : inventory) {
+		item.getNode()->setAnchorPoint(Vec2(0.5f, 0.5f));
+		item.getNode()->setLocalZOrder(150);
+		item.setPosition(Vec2(origin.x + windowSize.x - 125,
+							  origin.y + 125));
+		item.getNode()->setVisible(true);
+		item.redraw();
+	}
+
+	//checkUp();
+	//checkDown();
+	checkLeft();
+	checkRight();
+
+
+
+	//checkStart();
 
 	if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
 
@@ -154,13 +180,17 @@ void Gameplay::update(float dt) {
 	}
 	else
 		isHiding = false;
+	if (x == 700) {
+		cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
 
-	if (x == 500 && !isHiding) {
+	}
+	if (x == 1000 && !isHiding) {
+		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
 		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
 		scare->setVisible(true);
 		die = true;
 	}
-	else if (x == 500 && isHiding) {
+	else if (x == 1000 && isHiding) {
 
 		momBox.getNode()->setVisible(true);
 		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
@@ -168,15 +198,15 @@ void Gameplay::update(float dt) {
 		//play different audio file
 
 	}
-	if (x == 700 && die)
+	if (x == 1100 && die)
 		exit(0);
-	else if (x == 1000 && !die) {
+	else if (x == 1500 && !die) {
 		momBox.getNode()->setVisible(false);
 		x = rand() % 100;
 	}
 
-	//checkUp();
-	//checkDown();
+	checkUp();
+	checkDown();
 	checkLeft();
 	checkRight();
 	//checkStart();
@@ -240,8 +270,25 @@ void Gameplay::keyDownCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 
 void Gameplay::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 	keyboard.keyDown[(int)keyCode] = false;
+	
+	typedef EventKeyboard::KeyCode key;
+	switch (keyCode) {
+	case key::KEY_ESCAPE:
+		togglePause();
+		break;
+	
+	case key::KEY_SPACE:
+		if (inventory.size() > 0) {
+			inventory[0].getNode()->setLocalZOrder(0);
+			inventory[0].setPosition(Vec2(origin.x + playerHitCircle.getPosition().x + playerHitCircle.getRadius() + 5,
+										  origin.y + playerHitCircle.getPosition().y - playerHitCircle.getRadius() - 10));
+			inventory[0].redraw();
 
-	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) togglePause();
+			items.push_back(inventory[0]);
+			inventory.erase(inventory.begin());
+		}
+	}
+
 }
 
 
