@@ -44,7 +44,7 @@ void Gameplay::initSprites() {
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 
-	playerHitBox = g3nts::PrimitiveRect(Vec2(200, 200), Vec2(250, 350), Color4F(1, 1, 1, 1));
+	playerHitBox = g3nts::PrimitiveRect(Vec2(200, 100), Vec2(250, 300), Color4F(1, 1, 1, 1));
 	
 	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
 	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
@@ -203,28 +203,74 @@ void Gameplay::update(float dt) {
 		momTimer = rand() % 100;
 	}
 
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_UP)
-		|| */keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_W]) {
-		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, 5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, 5));
-		playerHitBox.redraw();
+	if (playerHitBox.getCentrePosition().y >= origin.y && playerHitBox.getCentrePosition().y <= topBoundary) {
+
+		if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_UP)
+			|| */keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_W]) {
+			playerHitBox.setNewPositions((playerHitBox.getStartPosition() + cocos2d::Vec2(0, 5)), playerHitBox.getEndPosition() + cocos2d::Vec2(0, 5));
+			playerHitBox.redraw();
+		}
+		else if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)
+			||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_S]) {
+			playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, -5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, -5));
+			playerHitBox.redraw();
+		}
+
+	}
+	else {
+		if (playerHitBox.getCentrePosition().y > topBoundary) {
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x,
+					origin.y + topBoundary + (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f),
+				Vec2(playerHitBox.getEndPosition().x,
+					origin.y + topBoundary - (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f)
+			);
+			playerHitBox.redraw();
+		}
+
+		else if (playerHitBox.getCentrePosition().y < origin.y) {
+			playerHitBox.setNewPositions(
+				Vec2(playerHitBox.getStartPosition().x,
+					origin.y + (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f),
+				Vec2(playerHitBox.getEndPosition().x,
+					origin.y - (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f)
+			);
+			playerHitBox.redraw();
+		}
 	}
 
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)
-		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_S]) {
-		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, -5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, -5));
-		playerHitBox.redraw();
-	}
 
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)
+	if (playerHitBox.getCentrePosition().x >= origin.x && playerHitBox.getCentrePosition().x <= origin.x + windowSize.x) {
+		if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)
 		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_A]) {
-		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(-5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(-5, 0));
-		playerHitBox.redraw();
+			playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(-5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(-5, 0));
+			playerHitBox.redraw();
+		}
+		else if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)
+			||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_D]) {
+			playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(5, 0));
+			playerHitBox.redraw();
+		}
 	}
-
-	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)
-		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_D]) {
-		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(5, 0));
-		playerHitBox.redraw();
+	else {
+		if (playerHitBox.getCentrePosition().x > origin.x + windowSize.x) {
+			playerHitBox.setNewPositions(
+				Vec2(origin.x + windowSize.x + (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+					 playerHitBox.getStartPosition().y),
+				Vec2(origin.x + windowSize.x - (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+					playerHitBox.getEndPosition().y)
+			);
+			playerHitBox.redraw();
+		}
+		else if (playerHitBox.getCentrePosition().x < origin.x) {
+			playerHitBox.setNewPositions(
+				Vec2(origin.x + (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+					playerHitBox.getStartPosition().y),
+				Vec2(origin.x - (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+					playerHitBox.getEndPosition().y)
+			);
+			playerHitBox.redraw();
+		}
 	}
 }
 

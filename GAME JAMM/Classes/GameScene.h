@@ -113,6 +113,7 @@ private:
 	
 	Vec2 windowSize;
 	Vec2 origin;
+	float topBoundary = 280.0f;
 };
 
 #endif // __GAME_SCENE_H__
