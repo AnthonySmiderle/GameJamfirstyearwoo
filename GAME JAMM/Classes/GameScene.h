@@ -52,10 +52,10 @@ public:
 	//void cKeyUpCallBack(Controller* controller, int keyCode, Event* cEvent);
 	//void cAxisEventCallBack(Controller* controller, int keyCode, Event* cEvent);
 	
-	/*void checkUp();
-	void checkDown();
-	void checkLeft();
-	void checkRight();*/
+	//void checkUp();
+	//void checkDown();
+	//void checkLeft();
+	//void checkRight();
 	
 
 	//void checkStart();

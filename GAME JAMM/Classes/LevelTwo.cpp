@@ -40,8 +40,9 @@ void LevelTwo::onExit() { Scene::onExit(); }
 void LevelTwo::initSprites() {
 	//cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
 
-	this->addChild(cabnet2.getPlaceToHide().getNode(), 1);
-	cabnet2.getPlaceToHide().getNode()->setVisible(false);
+	background = Sprite::create("backgrounds/MainMenuBGdark.png");
+	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
+	background->setAnchorPoint(Vec2(0.5f, 0.5f));
 
 	garage = Sprite::create("backgrounds/garage.png");
 	garage->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
@@ -58,61 +59,64 @@ void LevelTwo::initSprites() {
 	hallway->setVisible(false);
 	this->addChild(hallway, 1);
 
+	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
+	stupidMicrowave->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
+
 	dining = Sprite::create("backgrounds/dining.png");
 	dining->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
-	dining->setVisible(false);
-	this->addChild(dining, 1);
 
-	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
+	scare = Sprite::create("mom.png");
+	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
+
+	cabinet = g3nts::PrimitiveRect(Vec2(35, 210), Vec2(110, 350));
+	cabinet2 = HidingPlace(Vec2(35, 600), Vec2(110, 700));
+	momBox = g3nts::PrimitiveRect(Vec2(1000, 200), Vec2(1100, 500), Color4F(0, 1, 0, 1));
+
+	microBox = HidingPlace(Vec2(390, 400), Vec2(520, 430));
+	microBox.getPlaceToHide().getNode()->setVisible(false);
+
 	scoreLabel = Label::create("Time:", "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
 	scoreLabel->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height));
 
 	scoreLabelInt = Label::create(std::to_string(score), "fonts/Roboto/Roboto-Regular.ttf", 48, Size::ZERO, TextHAlignment::CENTER, TextVAlignment::CENTER);
-	scoreLabelInt->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height - 30));
-	this->addChild(scoreLabelInt, 100);
-
-	this->addChild(scoreLabel, 100);
-	stupidMicrowave->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
-	this->addChild(stupidMicrowave, -100);
-	stupidMicrowave->setVisible(false);
-	this->addChild(microBox.getPlaceToHide().getNode(), 1);
-	microBox.getPlaceToHide().getNode()->setVisible(false);
-	cabnet.getNode()->setVisible(false);
-
-	Vec2 windowSize = director->getWinSizeInPixels();
-	//itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	//itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
-	playerHitCircle = g3nts::PrimitiveCircle(Vec2(200, 200), 10, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	scoreLabelInt->setPosition(cocos2d::Vec2(windowSize.x - scoreLabel->getContentSize().width, windowSize.y - scoreLabel->getContentSize().height - 50));
 
 	hide = Label::create("Hold Space to Hide", "fonts/Roboto/Roboto-Regular.ttf", 30, Size::ZERO);
 	hide->setVisible(false);
 	hide->enableShadow();
-	this->addChild(hide,2);
 	hide->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
 
-
-	scare = Sprite::create("mom.png");
-	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
-	background = Sprite::create("backgrounds/MainMenuBGdark.png");
-	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
-	background->setAnchorPoint(Vec2(0.5f, 0.5f));
-
-	cameraTarget = Sprite::create();
-
+	playerHitBox = g3nts::PrimitiveRect(Vec2(200, 100), Vec2(250, 300), Color4F(1, 1, 1, 1));
+	
+	//itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
+	//itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1.0f, 0.0f, 0.0f, 1.0f));
 	//items.push_back(itemHitCircle1);
 	//items.push_back(itemHitCircle2);
 
-	this->addChild(cabnet.getNode(), 1);
-	this->addChild(momBox.getNode(), 2);
-	momBox.getNode()->setVisible(false);
-
-	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
-	this->addChild(playerHitCircle.getNode(), 1);
-
 	this->addChild(background, -100);
+	this->addChild(stupidMicrowave, -100);
+	this->addChild(dining, 1);
 	this->addChild(scare, 1000);
+
+	this->addChild(cabinet.getNode(), 1);
+	this->addChild(cabinet2.getPlaceToHide().getNode(), 1);
+	this->addChild(momBox.getNode(), 2);
+	this->addChild(microBox.getPlaceToHide().getNode(), 1);
+
+	this->addChild(scoreLabel, 100);
+	this->addChild(scoreLabelInt, 100);
+	this->addChild(hide, 2);
+
+	//for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
+	this->addChild(playerHitBox.getNode(), 1);
+
+	
+	dining->setVisible(false);
 	scare->setVisible(false);
-	this->addChild(cameraTarget);
+	cabinet.getNode()->setVisible(false);
+	cabinet2.getPlaceToHide().getNode()->setVisible(false);
+	momBox.getNode()->setVisible(false);
+	microBox.getPlaceToHide().getNode()->setVisible(false);
 }
 
 void LevelTwo::initPauseMenu() {
@@ -143,26 +147,26 @@ void LevelTwo::togglePause() {
 	paused = !paused;
 
 	if (paused) {
-		playerPos = playerHitCircle.getPosition();
+		playerStart = playerHitBox.getStartPosition();
+		playerEnd = playerHitBox.getEndPosition();
 
-		playerHitCircle.getNode()->setVisible(false);
+		playerHitBox.getNode()->setVisible(false);
 		HUD->setVisible(false);
-		for (g3nts::PrimitiveCircle item : items) {
-			item.getNode()->setVisible(false);
-		}
+		for (g3nts::PrimitiveCircle item : items) item.getNode()->setVisible(false);
+		for (g3nts::PrimitiveCircle item : inventory) item.getNode()->setVisible(false);
 
 		pauseMenu->setVisible(true);
 	}
 	else {
 		pauseMenu->setVisible(false);
-		HUD->setVisible(true);
 
-		playerHitCircle.setPosition(playerPos);
-		playerHitCircle.redraw();
-		playerHitCircle.getNode()->setVisible(true);
-		for (g3nts::PrimitiveCircle item : items) {
-			item.getNode()->setVisible(true);
-		}
+		playerHitBox.setNewPositions(playerStart, playerEnd);
+		playerHitBox.redraw();
+
+		HUD->setVisible(true);
+		playerHitBox.getNode()->setVisible(true);
+		for (g3nts::PrimitiveCircle item : items) item.getNode()->setVisible(true);
+		for (g3nts::PrimitiveCircle item : inventory) item.getNode()->setVisible(true);
 	}
 }
 
@@ -184,40 +188,40 @@ void LevelTwo::update(float dt) {
 
 	//manager.update();
 
+	if (!paused) {
+		x++;
 
-	x++;
+		for (int i = 0; i < items.size(); i++) {
+			if (g3nts::isColliding(playerHitBox, items[i])) {
 
-	for (int i = 0; i < items.size(); i++) {
-		if (g3nts::isColliding(playerHitCircle, items[i])) {
+				if (inventory.size() == 0) {
+					items[i].getNode()->setVisible(false);
 
-			if (inventory.size() == 0) {
-				items[i].getNode()->setVisible(false);
+					inventory.push_back(items[i]);
+					items.erase(items.begin() + i);
+					i--;
 
-				inventory.push_back(items[i]);
-				items.erase(items.begin() + i);
-				i--;
-
+				}
 			}
 		}
-	}
 
 
-	for (g3nts::PrimitiveCircle item : inventory) {
-		item.getNode()->setAnchorPoint(Vec2(0.5f, 0.5f));
-		item.getNode()->setLocalZOrder(150);
-		item.setPosition(Vec2(origin.x + windowSize.x - 125,
-			origin.y + 125));
-		item.getNode()->setVisible(true);
-		item.redraw();
-	}
+		for (g3nts::PrimitiveCircle item : inventory) {
+			item.getNode()->setAnchorPoint(Vec2(0.5f, 0.5f));
+			item.getNode()->setLocalZOrder(150);
+			item.setPosition(Vec2(origin.x + windowSize.x - 125,
+				origin.y + 125));
+			item.getNode()->setVisible(true);
+			item.redraw();
+		}
 
-	//checkUp();
-	//checkDown();
-	//checkLeft();
-	//checkRight();
-	//
+		//checkUp();
+		//checkDown();
+		//checkLeft();
+		//checkRight();
+		//
 
-	//checkStart();
+		//checkStart();
 
 //	if(playerHitCircle.getPosition().x > 110 && playerHitCircle.getPosition().x < 200)
 	if (isInKitchen) {
@@ -238,38 +242,118 @@ void LevelTwo::update(float dt) {
 			background->setVisible(true);
 			stupidMicrowave->setVisible(false);
 
+			}
+			if (microwaving)
+				score++;
+
+			if (playerHitBox.getCentrePosition().x >= cabinet.getStartPosition().x &&
+				playerHitBox.getCentrePosition().x <= cabinet.getEndPosition().x &&
+				playerHitBox.getCentrePosition().y >= 100 &&
+				!keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
+
+				hide->setVisible(true);
+			}
+			else
+				hide->setVisible(false);
+
+			if (playerHitBox.getCentrePosition().x > 35 && playerHitBox.getCentrePosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
+
+				isHiding = true;
+				playerHitBox.getNode()->setVisible(false);
+			}
+			else {
+				isHiding = false;
+				playerHitBox.getNode()->setVisible(true);
+			}
+
+			if (playerHitBox.getCentrePosition().x == 0) {
+				isInDining = true;
+				isInKitchen = false;
+
+				playerHitBox.setNewPositions(Vec2(windowSize.x - 75, 110), Vec2(windowSize.x - 25, 310));
+				
+				background->setVisible(false);
+				dining->setVisible(true);
+				cabinet2.getPlaceToHide().getNode()->setVisible(true);
+			}
+
+			if (playerHitBox.getCentrePosition().y >= origin.y && playerHitBox.getCentrePosition().y <= topBoundary) {
+				checkUp();
+				checkDown();
+			}
+			else {
+				if (playerHitBox.getCentrePosition().y > topBoundary) {
+					playerHitBox.setNewPositions(
+						Vec2(playerHitBox.getStartPosition().x,
+							origin.y + topBoundary + (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f),
+						Vec2(playerHitBox.getEndPosition().x,
+							origin.y + topBoundary - (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f)
+					);
+					playerHitBox.redraw();
+				}
+
+				else if (playerHitBox.getCentrePosition().y < origin.y) {
+					playerHitBox.setNewPositions(
+						Vec2(playerHitBox.getStartPosition().x,
+							origin.y + (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f),
+						Vec2(playerHitBox.getEndPosition().x,
+							origin.y - (playerHitBox.getEndPosition().y - playerHitBox.getStartPosition().y) / 2.0f)
+					);
+					playerHitBox.redraw();
+				}
+			}
+
+			if (playerHitBox.getCentrePosition().x >= origin.x && playerHitBox.getCentrePosition().x <= origin.x + windowSize.x) {
+				checkLeft();
+				checkRight();
+			}
+			else {
+				if (playerHitBox.getCentrePosition().x > origin.x + windowSize.x) {
+					playerHitBox.setNewPositions(
+						Vec2(origin.x + windowSize.x + (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+							playerHitBox.getStartPosition().y),
+						Vec2(origin.x + windowSize.x - (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+							playerHitBox.getEndPosition().y)
+					);
+					playerHitBox.redraw();
+				}
+				else if (playerHitBox.getCentrePosition().x < origin.x) {
+					playerHitBox.setNewPositions(
+						Vec2(origin.x + (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+							playerHitBox.getStartPosition().y),
+						Vec2(origin.x - (playerHitBox.getEndPosition().x - playerHitBox.getStartPosition().x) / 2.0f,
+							playerHitBox.getEndPosition().y)
+					);
+					playerHitBox.redraw();
+				}
+			}
 		}
-		if (microwaving)
-			score++;
 
-		if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && !keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
 
-			hide->setVisible(true);
-		}
-		else
-			hide->setVisible(false);
+		if (isInDining) {
 
-		if (playerHitCircle.getPosition().x > 35 && playerHitCircle.getPosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
-
-			isHiding = true;
-		}
-		else
-			isHiding = false;
-		if (playerHitCircle.getPosition().x == 0) {
-			isInDining = true;
-			isInKitchen = false;
-			playerHitCircle.setPosition(cocos2d::Vec2(windowSize.x - 50, 210));
-			dining->setVisible(true);
-			background->setVisible(false);
-			cabnet2.getPlaceToHide().getNode()->setVisible(true);
-		}
-	}
-	if (isInDining) {
-
-		if (isInHidingPlace(playerHitCircle, cabnet2) && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
-			hide->setVisible(false);
-
-			isHiding = true;
+			if (isInHidingPlace(playerHitBox, cabinet2) && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
+				playerHitBox.getNode()->setVisible(false);
+				hide->setVisible(false);
+				isHiding = true;
+			}
+			else if(playerHitBox.getCentrePosition().x >= cabinet2.getPlaceToHide().getStartPosition().x &&
+					playerHitBox.getCentrePosition().x <= cabinet2.getPlaceToHide().getEndPosition().x &&
+					playerHitBox.getCentrePosition().y >= cabinet2.getPlaceToHide().getStartPosition().y &&
+					playerHitBox.getCentrePosition().y <= cabinet2.getPlaceToHide().getEndPosition().y) {
+				
+				playerHitBox.getNode()->setVisible(true);
+				hide->setVisible(true);
+				isHiding = false;
+			}
+			else {
+				hide->setVisible(false);
+				isHiding = false;
+			}
+			checkUp();
+			checkDown();
+			checkLeft();
+			checkRight();
 		}
 		if (playerHitCircle.getPosition().y == windowSize.y) {
 			isInHallway = true;
@@ -340,22 +424,22 @@ void LevelTwo::update(float dt) {
 		cocos2d::experimental::AudioEngine::stop(1);
 		cocos2d::experimental::AudioEngine::play2d("superMomMusic.mp3");
 
-	}
-	if (x == 1000 && !isHiding) {
-		cocos2d::experimental::AudioEngine::play2d("superMomMusic.mp3");
-		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
-		scare->setVisible(true);
-		die = true;
-	}
-	else if (x == 1000 && isHiding) {
+		}
+		if (x == 1000 && !isHiding) {
+			cocos2d::experimental::AudioEngine::play2d("superMomMusic.mp3");
+			cocos2d::experimental::AudioEngine::play2d("ree.mp3");
+			scare->setVisible(true);
+			die = true;
+		}
+		else if (x == 1000 && isHiding) {
 
-		momBox.getNode()->setVisible(true);
-		cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
+			momBox.getNode()->setVisible(true);
+			cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
 
-		//play different audio file
+			//play different audio file
 
 	}
-	if (x == 1000 && !isHiding) {
+	if (x >= 1000 && !isHiding) {
 		cocos2d::experimental::AudioEngine::play2d("ree.mp3");
 		scare->setVisible(true);
 		die = true;
@@ -367,16 +451,14 @@ void LevelTwo::update(float dt) {
 		x = rand() % 100;
 	}
 
-	checkUp();
-	checkDown();
-	checkLeft();
-	checkRight();
-	//checkStart();
+		
+		//checkStart();
 
-	//if (playerHitCircle.getPosition().x == 0 || score == 1000) {
-	//	Scene* topDownSceneOne = TopDownSceneOne::createScene();
-	//	director->replaceScene(topDownSceneOne);
-	//}
+		//if (playerHitCircle.getPosition().x == 0 || score == 1000) {
+		//	Scene* topDownSceneOne = TopDownSceneOne::createScene();
+		//	director->replaceScene(topDownSceneOne);
+		//} 
+	}
 }
 
 void LevelTwo::initMouseListener() {
@@ -443,16 +525,18 @@ void LevelTwo::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 		togglePause();
 		break;
 
-	case key::KEY_SPACE:
+	case key::KEY_E:
 		if (inventory.size() > 0) {
-			inventory[0].getNode()->setLocalZOrder(0);
-			inventory[0].setPosition(Vec2(origin.x + playerHitCircle.getPosition().x + playerHitCircle.getRadius() + 5,
-				origin.y + playerHitCircle.getPosition().y - playerHitCircle.getRadius() - 10));
+			inventory[0].getNode()->setLocalZOrder(5);
+			inventory[0].setPosition(Vec2(origin.x + playerHitBox.getEndPosition().x + 20,
+				origin.y + playerHitBox.getStartPosition().y - 20));
 			inventory[0].redraw();
 
 			items.push_back(inventory[0]);
 			inventory.erase(inventory.begin());
 		}
+
+		break;
 	}
 
 }
@@ -488,32 +572,32 @@ void LevelTwo::keyUpCallback(EventKeyboard::KeyCode keyCode, Event* kEvent) {
 void LevelTwo::checkUp() {
 	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_UP)
 		|| */keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_W]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(0, 5));
-		playerHitCircle.redraw();
+		playerHitBox.setNewPositions((playerHitBox.getStartPosition() + cocos2d::Vec2(0, 5)), playerHitBox.getEndPosition() + cocos2d::Vec2(0, 5));
+		playerHitBox.redraw();
 	}
 }
 
 void LevelTwo::checkDown() {
 	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_DOWN)
 		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_S]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(0, -5));
-		playerHitCircle.redraw();
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(0, -5), playerHitBox.getEndPosition() + cocos2d::Vec2(0, -5));
+		playerHitBox.redraw();
 	}
 }
 
 void LevelTwo::checkLeft() {
 	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_LEFT)
 		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_A]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(-5, 0));
-		playerHitCircle.redraw();
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(-5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(-5, 0));
+		playerHitBox.redraw();
 	}
 }
 
 void LevelTwo::checkRight() {
 	if (/*manager.getController(0)->isButtonPressed(SednaInput::DPAD_RIGHT)
 		||*/ keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_D]) {
-		playerHitCircle.setPosition(playerHitCircle.getPosition() + cocos2d::Vec2(5, 0));
-		playerHitCircle.redraw();
+		playerHitBox.setNewPositions(playerHitBox.getStartPosition() + cocos2d::Vec2(5, 0), playerHitBox.getEndPosition() + cocos2d::Vec2(5, 0));
+		playerHitBox.redraw();
 	}
 }
 
@@ -529,6 +613,17 @@ bool LevelTwo::isInHidingPlace(g3nts::PrimitiveCircle c, HidingPlace h)
 	return false;
 }
 
+bool LevelTwo::isInHidingPlace(g3nts::PrimitiveRect r, HidingPlace h)
+{
+	if (r.getCentrePosition().x > h.getPlaceToHide().getStartPosition().x && r.getCentrePosition().x < h.getPlaceToHide().getEndPosition().x
+		&& r.getCentrePosition().y > h.getPlaceToHide().getStartPosition().y && r.getCentrePosition().y < h.getPlaceToHide().getEndPosition().y) {
+		hide->setVisible(true);
+		return true;
+
+	}
+
+	return false;
+}
 
 
 

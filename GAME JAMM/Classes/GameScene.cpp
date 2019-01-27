@@ -47,7 +47,6 @@ void Gameplay::initSprites() {
 
 	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
 	stupidMicrowave->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
-	stupidMicrowave->setVisible(false);
 	
 	scare = Sprite::create("mom.png");
 	scare->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
@@ -97,6 +96,7 @@ void Gameplay::initSprites() {
 	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
 	this->addChild(playerHitBox.getNode(), 1);
 
+	stupidMicrowave->setVisible(false);
 	scare->setVisible(false);
 	promptNextLevel->setVisible(false);
 	cabinet.getNode()->setVisible(false);
