@@ -59,6 +59,10 @@ void LevelTwo::initSprites() {
 	hallway->setVisible(false);
 	this->addChild(hallway, 1);
 
+
+	itemHitCircle1 = g3nts::PrimitiveCircle(cocos2d::Vec2(0, windowSize.y), 5);
+	itemHitCircle2 = g3nts::PrimitiveCircle(cocos2d::Vec2(0, windowSize.y), 5);
+
 	stupidMicrowave = Sprite::create("backgrounds/microwaving.png");
 	stupidMicrowave->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
 
@@ -93,6 +97,13 @@ void LevelTwo::initSprites() {
 	//items.push_back(itemHitCircle1);
 	//items.push_back(itemHitCircle2);
 
+	this->addChild(itemHitCircle1.getNode(), 10);
+	this->addChild(itemHitCircle2.getNode(), 10);
+	itemHitCircle1.getNode()->setVisible(false);
+	itemHitCircle2.getNode()->setVisible(false);
+	items.push_back(itemHitCircle1);
+	items.push_back(itemHitCircle2);
+
 	this->addChild(background, -100);
 	this->addChild(stupidMicrowave, -100);
 	this->addChild(dining, 1);
@@ -107,7 +118,7 @@ void LevelTwo::initSprites() {
 	this->addChild(scoreLabelInt, 100);
 	this->addChild(hide, 2);
 
-	//for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
+//	for (g3nts::PrimitiveCircle item : items) this->addChild(item.getNode());
 	this->addChild(playerHitBox.getNode(), 1);
 
 	
@@ -191,19 +202,7 @@ void LevelTwo::update(float dt) {
 	if (!paused) {
 		x++;
 
-		for (int i = 0; i < items.size(); i++) {
-			if (g3nts::isColliding(playerHitBox, items[i])) {
-
-				if (inventory.size() == 0) {
-					items[i].getNode()->setVisible(false);
-
-					inventory.push_back(items[i]);
-					items.erase(items.begin() + i);
-					i--;
-
-				}
-			}
-		}
+		
 
 
 		for (g3nts::PrimitiveCircle item : inventory) {
@@ -397,18 +396,32 @@ void LevelTwo::update(float dt) {
 		checkRight();
 
 		if (playerHitBox.getCentrePosition().y == windowSize.y) {
-			isInGarage = true;
-			isInHallway = false;
+			if (!inventory.empty()) {
+				isInGarage = true;
+				isInHallway = false;
 
-			playerHitBox.setNewPositions(
-				Vec2(playerHitBox.getStartPosition().x, 10),
-				Vec2(playerHitBox.getEndPosition().x, 10 + playerHitBox.getHeight())
-			);
+				playerHitBox.setNewPositions(
+					Vec2(playerHitBox.getStartPosition().x, 10),
+					Vec2(playerHitBox.getEndPosition().x, 10 + playerHitBox.getHeight())
+				);
 
-			hallway->setVisible(false);
-			garage->setVisible(true);
+				hallway->setVisible(false);
+				garage->setVisible(true);
+
+
+				inventory.clear();
+				itemHitCircle1.getNode()->setVisible(0);
+			}
+			else {
+				playerHitBox.setNewPositions(
+					Vec2(playerHitBox.getStartPosition().x, playerHitBox.getStartPosition().y - 5 - playerHitBox.getHeight()),
+					Vec2(playerHitBox.getEndPosition().x, playerHitBox.getStartPosition().y - 5)
+				);
+			}
 
 		}
+		
+
 		if (playerHitBox.getCentrePosition().y == 0) {
 			isInDining = true;
 			isInHallway = false;
@@ -439,12 +452,28 @@ void LevelTwo::update(float dt) {
 	}
 	if (isInGarage) {
 
-
 		checkUp();
 		checkDown();
 		checkLeft();
 		checkRight();
+		
 
+		cabinet2.getPlaceToHide().getNode()->setVisible(1);
+		isHiding = isInHidingPlace(playerHitBox, cabinet2);
+		
+		if (inventory.empty()) {
+			itemHitCircle2.setPosition(cocos2d::Vec2(1000, origin.y + 210));
+			itemHitCircle2.redraw();
+		}
+			if (g3nts::isColliding(playerHitBox, itemHitCircle2) && inventory.size() == 0) {
+
+				itemHitCircle2.getNode()->setVisible(false);
+
+				inventory.push_back(itemHitCircle2);
+				items.erase(items.begin());
+
+			}
+		itemHitCircle2.getNode()->setVisible(true);
 		if (playerHitBox.getCentrePosition().y == 0) {
 			isInHallway = true;
 			isInGarage = false;
@@ -458,7 +487,7 @@ void LevelTwo::update(float dt) {
 			hallway->setVisible(true);
 
 		}
-
+		
 	}
 	if (isInStair) {
 
@@ -466,7 +495,19 @@ void LevelTwo::update(float dt) {
 		checkDown();
 		checkLeft();
 		checkRight();
+		if (items.size() == 2) {
+			itemHitCircle1.setPosition(cocos2d::Vec2(1000, origin.y + 210));
+			itemHitCircle1.redraw();
+			if (g3nts::isColliding(playerHitBox, itemHitCircle1) && inventory.size() == 0) {
 
+					itemHitCircle1.getNode()->setVisible(false);
+
+					inventory.push_back(itemHitCircle1);
+					items.erase(items.begin());
+
+			}
+		}
+		itemHitCircle1.getNode()->setVisible(true);
 		if (playerHitBox.getCentrePosition().x == 0) {
 			isInHallway = true;
 			isInStair = false;

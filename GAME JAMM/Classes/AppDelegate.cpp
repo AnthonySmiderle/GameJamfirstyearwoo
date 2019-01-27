@@ -1,6 +1,7 @@
 #include "AppDelegate.h"
 //#include "HelloWorldScene.h"
 #include "MainMenuScene.h"
+#include "LevelTwo.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -44,8 +45,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // turn on display FPS
     //director->setDisplayStats(false);
 
+	auto lvl2 = LevelTwo::createScene();
 	auto mainMenu = MainMenu::createScene();
-    director->runWithScene(mainMenu);
+    director->runWithScene(lvl2);
 
     return true;
 }
