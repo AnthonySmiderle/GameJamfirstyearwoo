@@ -5,6 +5,8 @@
 
 #include "cocos2d.h"
 #include "Primitives.h"
+#include <cstdio>
+#include <random>
 //#include "XinputManager.h"
 
 USING_NS_CC;
@@ -66,6 +68,15 @@ public:
 
 
 private:
+
+	int x;
+	bool die = false;
+	bool isInRoom = false;
+	bool isHiding = false;
+	g3nts::PrimitiveRect cabnet{ cocos2d::Vec2(35,210),cocos2d::Vec2(110,350) };
+	g3nts::PrimitiveRect momBox{ cocos2d::Vec2(1000,200),cocos2d::Vec2(1100,500),cocos2d::Color4F(0,1,0,1) };
+
+
 	Director* director;
 	static cocos2d::Scene* sceneHandle;
 
@@ -80,6 +91,7 @@ private:
 	EventListenerController* controllerListener;
 	Gamepad gamepad;
 
+	Sprite* scare;
 	Sprite* background;
 
 	Sprite* cameraTarget;
