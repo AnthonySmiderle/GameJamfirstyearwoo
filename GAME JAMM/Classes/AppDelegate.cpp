@@ -47,7 +47,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
 	auto lvl2 = LevelTwo::createScene();
 	auto mainMenu = MainMenu::createScene();
-    director->runWithScene(lvl2);
+    director->runWithScene(mainMenu);
 
     return true;
 }

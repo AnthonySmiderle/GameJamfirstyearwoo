@@ -41,6 +41,8 @@ void Gameplay::onExit() { Scene::onExit(); }
 void Gameplay::initSprites() {
 	cocos2d::experimental::AudioEngine::play2d("mMusic.mp3", true);
 
+
+	
 	background = Sprite::create("backgrounds/MainMenuBGdark.png");
 	background->setPosition(windowSize.x / 2.0f, windowSize.y / 2.0f);
 	background->setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -56,7 +58,12 @@ void Gameplay::initSprites() {
 
 	cabinet = g3nts::PrimitiveRect(Vec2(35, 210), Vec2(110, 350));
 	momBox = g3nts::PrimitiveRect(Vec2(1000, 200), Vec2(1100, 500), Color4F(0, 1, 0, 1));
-	
+	momSprite = Sprite::create("momSprite.png");
+	momSprite->setPosition(momBox.getCentrePosition());
+	momSprite->setScale(0.4f);
+	this->addChild(momSprite, 1);
+	momSprite->setVisible(false);
+
 	microBox = HidingPlace(Vec2(390, 400), Vec2(520, 430));
 	microBox.getPlaceToHide().getNode()->setVisible(false);
 	
@@ -72,12 +79,17 @@ void Gameplay::initSprites() {
 	hide->setPosition(cocos2d::Vec2(windowSize.x / 2.0f, windowSize.y / 2.0f));
 
 	playerHitBox = g3nts::PrimitiveRect(Vec2(200, 100), Vec2(250, 300), Color4F(1, 1, 1, 1));
-
-	itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
+	playerSprite = Sprite::create("playerSprite.png");
+	playerSprite->setPosition(playerHitBox.getCentrePosition());
+	playerSprite->setScale(0.4f);
+	playerSprite->setVisible(true);
+	this->addChild(playerSprite, 1);
+	
+	/*itemHitCircle1 = g3nts::PrimitiveCircle(Vec2(50, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
 	itemHitCircle2 = g3nts::PrimitiveCircle(Vec2(500, 200), 5, 5, 40, false, Color4F(1, 0, 1, 1));
 
 	items.push_back(itemHitCircle1);
-	items.push_back(itemHitCircle2);
+	items.push_back(itemHitCircle2);*/
 	
 
 	this->addChild(background, -100);
@@ -99,6 +111,7 @@ void Gameplay::initSprites() {
 	stupidMicrowave->setVisible(false);
 	scare->setVisible(false);
 	promptNextLevel->setVisible(false);
+	playerHitBox.getNode()->setVisible(false);
 	cabinet.getNode()->setVisible(false);
 	momBox.getNode()->setVisible(false);
 }
@@ -148,7 +161,7 @@ void Gameplay::togglePause() {
 		playerHitBox.redraw();
 
 		HUD->setVisible(true);
-		playerHitBox.getNode()->setVisible(true);
+		playerHitBox.getNode()->setVisible(false);
 		for (g3nts::PrimitiveCircle item : items) item.getNode()->setVisible(true);
 		for (g3nts::PrimitiveCircle item : inventory) item.getNode()->setVisible(true);
 	}
@@ -169,6 +182,7 @@ void Gameplay::initHUD() {
 }
 
 void Gameplay::update(float dt) {
+	playerHitBox.getNode()->setVisible(false);
 
 	//manager.update();
 	if (score == 1000) {
@@ -184,6 +198,7 @@ void Gameplay::update(float dt) {
 		if (!paused) {
 			momTimer++;
 
+			playerSprite->setPosition(playerHitBox.getCentrePosition());
 			for (int i = 0; i < items.size(); i++) {
 				if (g3nts::isColliding(playerHitBox, items[i])) {
 
@@ -250,11 +265,12 @@ void Gameplay::update(float dt) {
 			if (playerHitBox.getCentrePosition().x > 35 && playerHitBox.getCentrePosition().x < 110 && keyboard.keyDown[(int)EventKeyboard::KeyCode::KEY_SPACE]) {
 
 				isHiding = true;
-				playerHitBox.getNode()->setVisible(false);
+				playerSprite->setVisible(false);
 			}
 			else {
+				playerSprite->setVisible(true);
 				isHiding = false;
-				playerHitBox.getNode()->setVisible(true);
+				//playerHitBox.getNode()->setVisible(true);
 
 			}
 			if (momTimer == 700) {
@@ -270,7 +286,7 @@ void Gameplay::update(float dt) {
 			}
 			else if (momTimer == 1000 && isHiding) {
 
-				momBox.getNode()->setVisible(true);
+				momSprite->setVisible(true);
 				cocos2d::experimental::AudioEngine::play2d("mom_music.mp3");
 
 				//play different audio file
@@ -286,7 +302,7 @@ void Gameplay::update(float dt) {
 			if (momTimer == 1500 && die || momTimer == 2000 && die)
 				exit(0);
 			else if (momTimer == 1500 && !die) {
-				momBox.getNode()->setVisible(false);
+				momSprite->setVisible(false);
 				momTimer = rand() % 100;
 			}
 

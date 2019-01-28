@@ -113,7 +113,12 @@ private:
 	Gamepad gamepad;*/
 
 	Sprite* scare;
+	Sprite* momSprite;
+	Sprite* playerSprite;
 	Sprite* stupidMicrowave;
+	Sprite* map;
+	Sprite* screwDriver;
+	Sprite* key;
 	Sprite* background;
 
 	bool paused = false;

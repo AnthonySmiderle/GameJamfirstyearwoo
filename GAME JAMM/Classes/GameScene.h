@@ -97,6 +97,8 @@ private:
 	Sprite* stupidMicrowave;
 	Sprite* background;
 	Sprite* scare;
+	Sprite* momSprite;
+	Sprite* playerSprite;
 
 	bool paused = false;
 	Menu* pauseMenu;
